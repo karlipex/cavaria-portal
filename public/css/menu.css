@@ -1,0 +1,415 @@
+body{
+    margin: 0;
+}
+.fondo{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    min-height: 900px;
+    z-index: -1000;
+    opacity: 0.5;
+}
+.hola{
+    position: fixed;
+    width: 100%;
+    height: 28px;
+    top: 0;
+    left: 0;
+    padding: 5px 60px 0 0;
+    margin: 0;
+    background-color: #47c1f2;
+    box-sizing: border-box;
+    color: #fff;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    text-align: right;
+    z-index: 9999;
+}
+#sp{
+    position: fixed;
+    right: 30px;
+    top: 2px;
+    border: 1px solid #fff;
+    border-radius: 200px;
+    padding: 0.5px 6px 0.5px 5.3px;
+    cursor: pointer;
+    box-sizing: border-box;
+    color: #fff;
+    transition: 1s;
+    z-index: 9999;
+}
+.animate{
+    transform: rotateX(180deg)
+}
+.option{
+    position: fixed;
+    top: -40px;
+    right: 0px;
+    width: 180px;
+    padding: 5px 20px;
+    box-sizing: border-box;
+    background: #47c1f2;
+    box-shadow: -2px 2px 5px #ddd;
+    z-index: 9998;
+    transition: 1s;
+}
+.option a{
+    text-decoration: none;
+    color: #fff;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    display: block;
+    margin: 7px 0;
+}
+.option a:nth-child(1){
+    cursor: pointer;
+}
+.ver-options{
+    top: 28px;
+}
+.header{
+    position: relative;
+    width: 100%;
+    left: 0;
+    top: 28px;
+    background: #fff;
+    z-index: 9997;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+}
+.header img{
+    width: 300px;
+}
+.header select{
+    position: absolute;
+    width: 50%;
+    height: 40px;
+    left: 340px;
+    top: 25px;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    color: #999;
+    letter-spacing: 3px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.header select option{
+    text-transform: uppercase;
+    font-weight: 300;
+}
+.header select.decorated option:hover {
+    box-shadow: 0 0 10px 100px #ff0000 inset;
+}
+.header a{
+    text-decoration: none;
+    color: #47c1f2;
+    transition: 1s;
+}
+.header a:hover{
+    color: #666;
+}
+.header a .cont-ico{
+    position: absolute;
+    top: 20px;
+    left: 340px;
+    text-align: center;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    perspective: 100px;
+}
+.header a .cont-ico img{
+    width: 40px;
+    transition: 1s;
+}
+.header a:hover .cont-ico img{
+    transform:rotateY(180deg);
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+.header a .cont-ico p{
+    margin-top: 5px;
+}
+.data{
+    position: relative;
+    margin-top: 25px;
+    width: 100%;
+    height: auto;
+    background-color: rgba(200,200,200,0.5);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    text-align: center;
+}
+.data div{
+    display: inline-block;
+    padding: 10px 15px;
+}
+.grilla{
+    position: relative;
+    width: 90%;
+    margin: 50px auto;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+.grilla .agregar, .vol{
+    position: absolute;
+    top: 15px;
+    right: 0;
+    background-color: #47c1f2;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 20px;
+    box-sizing: border-box;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.grilla .agregar:hover, .vol:hover,.grilla .black .buttons .ingr:hover,.grilla .modalback .box .ingr:hover{
+    color: #47c1f2;
+    background-color: #fff;
+}
+.black{
+    background-color: #fff;
+    padding: 20px;
+}
+.grilla .black .buttons{
+    position: absolute;
+    top: 20px;
+    right: 0;
+}
+.grilla .black .buttons .ingr,.grilla .modalback .box .ingr{
+    padding: 5px 10px;
+    background-color: #47c1f2;
+    color: #fff;
+    box-sizing: border-box;
+    text-decoration: none;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.grilla .black .table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.grilla .black .table tr td{
+    height: 25px;
+}
+.grilla .black .table tr td:nth-child(1),.grilla .black .table tr td:nth-child(3){
+    width: 100px;
+}
+.grilla .black .table tr td i{
+    color: #999;
+    letter-spacing: 1px;
+    font-style: normal;
+}
+.grilla .black .table tr td input{
+    border: none;
+    width: 100%;
+}
+#timer .container div{
+    display: inline;
+}
+.travieso{
+    position: relative;
+    margin: 5px auto;
+    padding: 6px 10px;
+    border: 1px solid #47c1f2;
+    width: 300px;
+    background-color: #47c1f2;
+    color: #fff;
+    box-sizing: border-box;
+    text-decoration: none;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.travieso:hover{
+    color: #47c1f2;
+    background: #fff;
+}
+/**MODAL CAMBIO PASSWORD**/
+.modalback{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-image: url(../img/balls.png);
+    background-color: rgba(71,193,242,0.5);
+    z-index: 99999999999999999999999999999;
+    color: #666;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.5s;
+}
+.modalback .box{
+    position: absolute;
+    width: 50%;
+    margin-left: -25%;
+    left: 50%;
+    top: 10%;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 6px #999;
+    background-color: #fff;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    text-align: center;
+}
+.modalback .box #forma{
+    transition: 0.5s;
+}
+.modalback .box input, .modalback .box select{
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
+    width: 300px;
+    height: 30px;
+    text-align: center;
+    left: 50%;
+    margin-left: -150px;
+    border-radius: 3px;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: none;
+    border-right: none;
+}
+.modalback .box .boot input {
+    position: relative;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.8s;
+    z-index: 3;
+}
+.modalback .box .boot:hover input {
+    color: #47c1f2;
+}
+.modalback .box .boot::before {
+    position: absolute;
+    content: "  ";
+    background: #ddd;
+    margin: 1px 0 0 -151px;
+    width: 300px;
+    left: 50%;
+    height: 30px;
+    border-radius: 3px;
+    z-index: 2;
+    pointer-events: none;
+    transition: margin 1s, background 1s, width 1s, height 1s;
+}
+.modalback .box .boot::after {
+    position: absolute;
+    content: "  ";
+    background: transparent;
+    margin: -55.8px 0 0 -151px;
+    width: 0;
+    left: 50%;
+    height: 0px;
+    border-radius: 3px;
+    z-index: 2;
+    pointer-events: none;
+}
+.modalback .box .boot:hover::after {
+    animation: bord 5s linear infinite;
+}
+@keyframes bord{
+    0%,100%{width: 0; height: 0; background: transparent; margin: -50.8px 0 0 -151px}
+    25%,75%{width: 302px; height: 32.5px; background: #47c1f2; margin: -51px 0 0 -151px}
+    50%{width: 0px; height: 0px; background: #47c1f2; margin: -18.5px 0 0 151px}
+}
+.modalback .box .cierra{
+    position: absolute;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 1px 6px;
+    top: -2%;
+    left: 99%;
+    cursor: pointer;
+    background: #fff;
+}
+.modalback .box .cierra:hover{
+    animation: giron 2s ease infinite;
+}
+@keyframes giron{
+    0%, 75%, 100%{transform: rotate(0)}
+    25%, 50%{transform: rotate(360deg)}
+}
+.abremodal{
+    opacity: 1;
+    pointer-events: all;
+}
+.oculto{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+}
+.libre{
+    opacity: 1;
+    pointer-events: auto;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    top: 25%;
+}
+.bouts{
+    width: 40px;
+    background-color: #47c1f2;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid #47c1f2;
+}
+.bouts:hover{
+    background-color: #fff;
+    color: #47c1f2;
+}
+@media screen and (max-width: 698px){
+    .header{
+        padding: 15px 0;
+    }
+    .header img{
+        width: 200px;
+    }
+    .header select{
+        left: 220px;
+    }
+    #modalback .box{
+        width: 90%;
+        margin-left: -45%;
+    }
+}
+@media screen and (max-width: 500px){
+    .header{
+        padding: 15px;
+        height: 160px;
+    }
+    .header img{
+        width: 200px;
+    }
+    .header select{
+        position: relative;
+        left: 0px;
+        width: 100%;
+    }
+}
+.fail{
+    background: transparent;
+    color: #ff0000;
+    border-bottom: 1px solid #f00;
+    border-top: hidden;
+    border-left: hidden;
+    border-right: 1px solid #f00;
+}
+.fail::-webkit-input-placeholder{
+    color: red;
+}
+.fail::-moz-input-placeholder{
+    color: red;
+}
+.fail:-moz-input-placeholder{
+    color: red;
+}
+.fail:-ms-input-placeholder{
+    color: red;
+}

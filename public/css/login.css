@@ -1,0 +1,133 @@
+.backgr{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    min-height: 900px;
+    z-index: -1000;
+}
+.login{
+    position: relative;
+    margin: 150px auto;
+    width: 500px;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    text-align: center;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-weight: 100;
+    z-index: 1;
+}
+.login .title{
+    margin-top: -10px;
+    font-size: 28px;
+    color: #999;
+}
+.login input{
+    position: relative;
+    display: block;
+    margin: 20px auto;
+    width: 70%;
+    height: 35px;
+    padding: 5px;
+    border-radius: 3px;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: none;
+    border-right: none;
+    box-sizing: border-box;
+    z-index: 99;
+    color: #999;
+}
+.login .boot input{
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.8s;
+}
+.login .boot:hover input{
+    color: #47c1f2;
+}
+.login .boot::before{
+    position: absolute;
+    content: "  ";
+    background: #ddd;
+    margin: 1px 0 0 -162px;
+    width: 322px;
+    left: 50%;
+    height: 35px;
+    border-radius: 3px;
+    z-index: 2;
+    pointer-events: none;
+    transition: margin 1s, background 1s, width 1s, height 1s;
+}
+.login .boot::after{
+    position: absolute;
+    content: "  ";
+    background: transparent;
+    margin: -55.8px 0 0 -162px;
+    width: 0;
+    left: 50%;
+    height: 0px;
+    border-radius: 3px;
+    z-index: 2;
+    pointer-events: none;
+}
+.login .boot:hover::after{
+    animation: bord 5s linear infinite;
+}
+@keyframes bord{
+    0%,100%{width: 0; height: 0; background: transparent; margin: -55.8px 0 0 -162px}
+    25%,75%{width: 324px; height: 37px; background: #47c1f2; margin: -55.8px 0 0 -162px}
+    50%{width: 0px; height: 0px; background: #47c1f2; margin: -19px 0 0 162px}
+}
+
+/*Pantallas celulares*/
+@media screen and (max-width: 600px){
+    .login{
+        width: 90%;
+    }
+    .login img{
+        width: 100%;
+    }
+    .login input{
+        width: 100%;
+    }
+    .login .boot::before,.login .boot::after{
+        width: 90%;
+        margin: 1px 0 0 -45%;
+        left: 50%;
+    }
+    @keyframes bord{
+        0%,100%{width: 0; height: 0; background: transparent; margin: -55.8px 0 0 -45%}
+        25%,75%{width: 90%; height: 37px; background: #47c1f2; margin: -55.8px 0 0 -45%}
+        50%{width: 0px; height: 0px; background: #47c1f2; margin: -19px 0 0 45%}
+    }
+}
+.login .fail{
+    background: transparent;
+    color: #ff0000;
+    border-left: 1px solid #ff0000;
+    border-bottom: 1px solid #ff0000;
+    transition: 1s;
+}
+.fail::-webkit-input-placeholder{
+    color: red;
+}
+.fail::-moz-input-placeholder{
+    color: red;
+}
+.fail:-moz-input-placeholder{
+    color: red;
+}
+.fail:-ms-input-placeholder{
+    color: red;
+}
+.error{
+    color: red;
+    font-weight: 500;
+}
