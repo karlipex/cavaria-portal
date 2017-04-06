@@ -1,14 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<body id="body_grill">
+<body id="body_grill" onload="showArea()">
 <div class="grilla">
 <h2>Detalle Contacto</h2>
     <div class=" black">
     <?php if($this->session->flashdata('ErrorMessage')!='') { ?>
                 <div><?php echo $this->session->flashdata('ErrorMessage'); ?></div>
     <?php } ?>
-    <div id="timer">
+    <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
+    
+    <?php } else {?>
+          <div id="timer">
             <div class="container">
                 <div>Tiempo de la llamada: </div>
                 <div id="hour">00</div>
@@ -17,7 +20,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="divider">:</div>
                 <div id="second">00</div>                
             </div>
-        </div>
+          </div>
+    <?php } ?>
+    <br>
     <table class="table">
    	  <tr>
          <td><i>Fecha Ingreso:</i></td>
@@ -43,20 +48,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
          <td><i>Campaña:</i></td>
          <td><input type="text" id="ccampa" name="campana" value="<?php echo $contacto->campana ?>" readonly></td>
       </tr>
+      <tr class="area"><td>Ultima Acción</td></tr>
+      <tr class="area"> 
+        <td><i>Fecha:</i></td>
+        <td><?php echo $contacto->fechaLlamada ?></td>
+        <td><i>Estado:</i></td>
+        <td><?php echo $contacto->estado ?></td>
+      </tr>
+        <tr id="trObs">
+          <td><i>Observaciones:</i></td>
+          <td><?php echo $contacto->obs ?></td>
+        </tr>
    	  <span class="buttons">
         <?php if($llamadas == "0"){ ?>
           <span class="ingr" onclick="modifying()">Modificar</span>
           <span class="ingr" onclick="deleteCont()">Eliminar</span>
         <?php } ?>
-          <span class="ingr" onclick="story()">Historial</span>
           <a class="ingr" href="<?php echo base_url()?>menu-contactos">Volver</a>
-      </span>
+          </span>
+<input type="hidden" id="callValue" value="<?php echo $llamadas ?>">
+<input type="hidden" id="obsValue" value="<?php echo $contacto->obs ?>">
    </table>
 
    <br>
-  <?php if($llamadas <> "0"){ ?>
- <h3>Listado de llamadas</h3>
-  <div id="grid2" style="width: 100%; height: 350px"></div>
+ <h3 class="area">Listado de llamadas</h3>
+  <div id="grid2" style="width: 100%; height: 300px" class="area"></div>
 
   <script type="text/javascript">
   $(function () {
@@ -86,8 +102,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
   });
 </script>
-
-  <?php } ?>
    <div class="modalback" id="eliminarCont">
             <div class="box">
                 <p>Seguro quieres eliminar este contacto?</p>
@@ -96,17 +110,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
            </div>
     </div>
         <br>
+     <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
+    
+     <?php } else {?>
      <a class="travieso" onclick="abre()" id="btn-comenzar">Nueva Llamada</a>
+     <?php } ?>
      <a class="travieso" href="<?php echo base_url()?>reporte-contacto/<?php echo $contacto->idcontacto ?>">Reporte</a>
 
      <div id="newllamada" class="modalback">
      <div class="box">
        <h3>Nueva Llamada</h3>
         <select id="opciones" name="opciones" onchange="opcionLlamada()">
-            <option value="0">Seleccione una Opción</option>
-            <option value="1">Llamar de Nuevo</option>
+            <option value="0">Seleccione una opción</option>
+            <option value="1">Llamar de nuevo</option>
             <option value="2">Agenda</option>
-            <option value="3">No Llamar Más</option>
+            <option value="3">No llamar Más</option>
         </select>
 
         <select id="status1" name="status" style="display:none" onchange="status1()">
@@ -144,7 +162,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <input type="text" id="ciudad" placeholder="Ingrese ciudad" maxlength="100" onchange="actButtonCerrarOtraCiudad()">
          </div>
          <div id="fueraPresupuesto" style="display: none">
-            <input type="text" id="presupuesto" onkeyup="format(this)" onchange="format(this)" placeholder="Presupuesto" maxlength="9" onchange="actButtonCerrarPresupuesto()">
+            <input type="text" id="presupuesto" onkeyup="format(this)" placeholder="Presupuesto" maxlength="9" onchange="actButtonCerrarPresupuesto()">
          </div>
          <div id="prestacionNo" style="display: none">
             <input type="text" id="prestacion" placeholder="Prestación" maxlength="100" onchange="actButtonCerrarNP()">
@@ -173,7 +191,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <span class="cierra" onclick="closemodifying()">x</span>
     </div>
 </div>
- <!------------MODAL HISTORIAL-------------->
+ <!------------MODAL HISTORIAL
  <div id="historial" class="modalback">
   <div class="box">
     <table>
@@ -193,6 +211,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <span class="cierra" onclick="cierraStory()">x</span>
   </div>
  </div>
+ -------------->
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -335,7 +354,7 @@ function closemodifying(){
             $("#modifyCont").removeClass("abremodal");
             $("#formuR").removeClass("oculto");
             $("#adviserModify").removeClass("libre");
-            location.reload();
+            w2ui["grid2"].reload();
         }
     
     //Llamar denuevo. Si contesta pero pide llamar despúes o está embarazada
@@ -350,6 +369,7 @@ function closemodifying(){
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
+                    idcontacto: $("#cid").val(),
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status1").val(),
@@ -360,7 +380,12 @@ function closemodifying(){
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -389,7 +414,12 @@ function closemodifying(){
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -406,19 +436,25 @@ function closemodifying(){
         $.ajax({
             type: "POST",
             dataType: "html",
-            url: "<?php echo base_url() ?>datos-llamado",
+            url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
+                    idcontacto: $("#cid").val(),
                     tiempo: tiempo,
                     option: $("#opciones").val(),
-                    stat: $("#status2").val(),
+                    stat: "Agenda",
                     age: $("#idmedilink").val(),
                 },
                  success:  function (a) {
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                     obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -435,9 +471,10 @@ function closemodifying(){
         $.ajax({
             type: "POST",
             dataType: "html",
-            url: "<?php echo base_url() ?>datos-llamado",
+            url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
+                    idcontacto: $("#cid").val(),
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status3").val(),
@@ -446,7 +483,12 @@ function closemodifying(){
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -463,9 +505,10 @@ function closemodifying(){
         $.ajax({
             type: "POST",
             dataType: "html",
-            url: "<?php echo base_url() ?>datos-llamado",
+            url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
+                    idcontacto: $("#cid").val(),
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status3").val(),
@@ -475,7 +518,12 @@ function closemodifying(){
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -483,7 +531,46 @@ function closemodifying(){
 
             });
     }
-    //presupuesto
+    //fuera de presupuesto
+    function budget(){
+        hora = document.getElementById("hour").textContent;
+        minu = document.getElementById("minute").textContent;
+        segu = document.getElementById("second").textContent;
+        tiempo = hora+":"+minu+":"+segu;
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: "<?php echo base_url() ?>nueva-llamada",
+            data:  
+                {
+                    idcontacto: $("#cid").val(),
+                    tiempo: tiempo,
+                    option: $("#opciones").val(),
+                    stat: $("#status3").val(),
+                    prest: $("#presupuesto").val(),
+                },
+                 success:  function (a) {
+                    console.log(a);
+                    document.getElementById("newllamada").classList.remove("abremodal");
+                    document.getElementById("btn-comenzar").style.display="none";
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
+                },
+                error: function(){
+                    console.log();
+                }
+
+            });
+    }
+    //ya se lo hizo
+    function realizado(){
+
+    }
+    //prestación
     function nopres(){
         hora = document.getElementById("hour").textContent;
         minu = document.getElementById("minute").textContent;
@@ -492,9 +579,10 @@ function closemodifying(){
         $.ajax({
             type: "POST",
             dataType: "html",
-            url: "<?php echo base_url() ?>datos-llamado",
+            url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
+                    idcontacto: $("#cid").val(),
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status3").val(),
@@ -504,7 +592,12 @@ function closemodifying(){
                     console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
-                    w2ui['grid2'].reload();
+                    obs = document.getElementById("obsValue").value;
+                    $(".area").css("display","");
+                      if(obs == 0){
+                        $("#trObs").css("display","");
+                      }
+                    w2ui["grid2"].reload();
                 },
                 error: function(){
                     console.log();
@@ -512,4 +605,15 @@ function closemodifying(){
 
             });
     }
+    
+      function showArea(){
+          obs = document.getElementById("obsValue").value;
+          llamadas = document.getElementById("callValue").value;
+          if(llamadas == 0){
+              $(".area").css("display","none");
+          }
+          if(obs == 0){
+            $("#trObs").css("display","none");
+          }
+      }
 </script>

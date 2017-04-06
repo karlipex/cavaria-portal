@@ -160,6 +160,7 @@ create table contacto
   fechaLlamada timestamp,
   nuevaIteracion timestamp,
   dias int,
+  obs varchar(200),
   estado varchar(100),
   constraint pk_contacto primary key(idcontacto),
   constraint fk_pro_cont foreign key(tratamiento) references tratamiento(idtratamiento)
@@ -199,6 +200,8 @@ select * from usuario;
 select * from llamada;
 select * from historialLlamada;
 drop database botox;
+
+delete from llamada where contacto = 1000;
 
 SELECT u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(ll.tiempoLlamada))) AS horas FROM llamada ll INNER JOIN usuario u on ll.usuario = u.idusuario   group by u.usuario;
 

@@ -56,30 +56,54 @@ class Contactos extends CI_Controller {
     }
   }
 
+  public function getContacto($id)
+  {
+    if(!empty($this->session_id))
+    {
+      $contacto=$this->Contacto->getContacto($id);
+
+      echo json_encode($contacto);
+
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
   public function detalle($id)
   {
     if(!empty($this->session_id))
     {
       $us=$this->session_id;
       $usuario=$this->Usuario->getUsuario($us);
-      $tratamientos=$this->Tratamiento->listTratamiento();
-      $llamadas=$this->Llamada->countLlamada($id);
-      $historials=$this->HistorialLlamada->listHistorialPersonal($id);
-      if($usuario->permisos == "1000" || $usuario->permisos == "1001" )
+      $check=$this->Contacto->check($id);
+      if($check != 0)
       {
-        $contacto=$this->Contacto->getContacto($id);
-        $tratamientos=$this->Tratamiento->listTratamiento2($contacto->tratamiento);
-        $this->layout->setLayout('menu');
-        $this->layout->setTitle("Detalle Contacto ".$id);
-        $this->layout->setKeywords("Detalle Contactos ".$id);
-        $this->layout->setDescripcion("Detalle Contactos ".$id);
-        $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
-        $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js",base_url()."public/js/w2ui.js",base_url()."public/js/countdown.js"));
-        $this->layout->view('detalle',compact('usuario','contacto','tratamientos','llamadas','historials'));
+        $tratamientos=$this->Tratamiento->listTratamiento();
+        $llamadas=$this->Llamada->countLlamada($id);
+        $historials=$this->HistorialLlamada->listHistorialPersonal($id);
+        if($usuario->permisos == "1000" || $usuario->permisos == "1001" )
+        {
+          $contacto=$this->Contacto->getContacto($id);
+          $tratamientos=$this->Tratamiento->listTratamiento2($contacto->tratamiento);
+          $this->layout->setLayout('menu');
+          $this->layout->setTitle("Detalle Contacto ".$id);
+          $this->layout->setKeywords("Detalle Contactos ".$id);
+          $this->layout->setDescripcion("Detalle Contactos ".$id);
+          $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
+          $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js",base_url()."public/js/w2ui.js",base_url()."public/js/countdown.js"));
+          $this->layout->view('detalle',compact('usuario','contacto','tratamientos','llamadas','historials'));
+        }
+        else
+        {
+          redirect(base_url()."menu-principal",  301);
+        }
       }
       else
       {
-        redirect(base_url()."menu-principal",  301);
+        $this->session->set_flashdata('ErrorMessage','El contacto no existe.');
+        redirect(base_url()."error",  301);
       }
     }
     else
@@ -142,6 +166,9 @@ class Contactos extends CI_Controller {
         $us=$this->session_id;
         $usuario=$this->Usuario->getUsuario($us);
         $contacto=$this->Contacto->getContacto($id);
+        $llamadas=$this->Llamada->countLlamada($id);
+        $calls=$this->Llamada->listLlamadasContacto($id);
+        $hoy =date("d-m-y");
         $html='<style>
                 h2,h3,p, table, .table{color: #555;font-family: helvetica;}
                .tabla{width: 100%;}
@@ -172,6 +199,46 @@ class Contactos extends CI_Controller {
                   <td style="width: 50%"><b>Campaña:</b> '.$contacto->campana.'</td>
                 </tr>
                 </table>';
+                if($llamadas != 0){
+                 $html.='<br></h2><table class="table">
+                         <tr>
+                              <td colspan="2" class="red">Ultima Acción:</td>
+                        </tr>
+                         <tr>
+                             <td style="width: 50%"><b>Fecha:</b> '.$contacto->fechaLlamada.'</td>
+                             <td style="width: 50%"><b>Estado:</b> '.$contacto->estado.'</td>
+                        </tr>';
+                  if($contacto->obs != null){
+                  $html.='<tr>
+                             <td style="width: 50%"><b>Observaciones:</b> '.$contacto->obs.'</td>
+                          </tr>';
+
+                  $html.='</table><br>'; 
+                 }
+                  $html.='<br><table class="table">
+                        <tr>
+                            <td class="red">ID</td>
+                            <td class="red">CAPE</td>
+                            <td class="red">Fecha</td>
+                            <td class="red">Tiempo llamada</td>
+                            <td class="red">Estado</td>
+                        </tr>';
+                   foreach ($calls as $call) {
+
+                     $html .= '<tr>';
+                     $html .= '<td>'.$call->recid.'</td>';
+                     $html .= '<td>'.$call->usuario.'</td>';
+                     $html .= '<td>'.$call->fecha.'</td>';
+                     $html .= '<td>'.$call->tiempollamada.'</td>';
+                     $html .= '<td>'.$call->estado.'</td>';
+                     $html .= '</tr>';
+                  }
+                   $html .= '</table>';
+                } 
+                 $html.='
+                <br>
+                <br>
+                <p>Generado por: '.$usuario->usuario.' / '.$hoy.'.</p>';
 
           // Imprimimos el texto con writeHTMLCell()
         $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
