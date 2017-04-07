@@ -213,7 +213,8 @@ class Contactos extends CI_Controller {
                              <td style="width: 50%"><b>Observaciones:</b> '.$contacto->obs.'</td>
                           </tr>';
 
-                  $html.='</table><br>'; 
+                  $html.='</table><br>
+                          <h3>Historial de llamadas</h3>'; 
                  }
                   $html.='<br><table class="table">
                         <tr>

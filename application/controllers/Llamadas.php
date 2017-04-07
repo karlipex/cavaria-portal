@@ -31,8 +31,9 @@ class Llamadas extends CI_Controller {
                      $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+3 Hours")));
                      $tope=date('Y-m-d 19:00:00');
                      $llamada=date('Y-m-d '.$tiempo.'');
+                     $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                      if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta');
                      } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
                          $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta');
@@ -45,7 +46,8 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
-
+                         $traeContacto=$this->Contacto->getContacto($contacto);
+                         echo json_encode($traeContacto);
                          //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, no contesta.');
                          //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
@@ -59,7 +61,8 @@ class Llamadas extends CI_Controller {
                       $newTime=$this->input->post("newTime");
                       $llamada=date('Y-m-d '.$tiempo.'');
                       $nuevaIteracion=$newDate." ".$newTime.":00";
-                      $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Contesta, pero llama después');
+                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
+                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Contesta, pero llama después');
                       $update=$this->Contacto->update($datos1,$contacto);
                     
                       $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Contesta, pero llama después');
@@ -69,6 +72,9 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
+
+                         $traeContacto=$this->Contacto->getContacto($contacto);
+                         echo json_encode($traeContacto);
 
                          //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, contesta, pero llama después.');
                          //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -81,8 +87,9 @@ class Llamadas extends CI_Controller {
                    $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+5 Hours")));
                    $tope=date('Y-m-d 19:00:00');
                    $llamada=date('Y-m-d '.$tiempo.'');
+                   $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                    if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz');
                     } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+21 Hours")));
                          $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz');
@@ -96,6 +103,9 @@ class Llamadas extends CI_Controller {
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
 
+                         $traeContacto=$this->Contacto->getContacto($contacto);
+                         echo json_encode($traeContacto);
+
                          //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, buzón de voz.');
                          //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
@@ -106,7 +116,8 @@ class Llamadas extends CI_Controller {
 
                      $nuevaIteracion=date("Y-m-d 10:00:00",(strtotime("+7 Days")));
                      $llamada=date('Y-m-d '.$tiempo.'');
-                     $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará');
+                     $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
+                     $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará');
                      $update=$this->Contacto->update($datos1,$contacto);
 
                      $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Llamará');
@@ -116,6 +127,9 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
+
+                         $traeContacto=$this->Contacto->getContacto($contacto);
+                         echo json_encode($traeContacto);
 
                          //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, Llamará.');
                          //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -143,6 +157,9 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $traeContacto=$this->Contacto->getContacto($contacto);
+                      echo json_encode($traeContacto);
+
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, Embarazada.');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
@@ -161,6 +178,9 @@ class Llamadas extends CI_Controller {
                       $ip =$this->input->ip_address();
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
+
+                      $traeContacto=$this->Contacto->getContacto($contacto);
+                      echo json_encode($traeContacto);
 
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Agendo, cita N°:'.$idMedilink);
                       //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -182,6 +202,9 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $traeContacto=$this->Contacto->getContacto($contacto);
+                      echo json_encode($traeContacto);
+
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
@@ -200,6 +223,9 @@ class Llamadas extends CI_Controller {
                       $ip =$this->input->ip_address();
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
+
+                      $traeContacto=$this->Contacto->getContacto($contacto);
+                      echo json_encode($traeContacto);
 
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -221,6 +247,9 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $traeContacto=$this->Contacto->getContacto($contacto);
+                      echo json_encode($traeContacto);
+
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
@@ -239,6 +268,9 @@ class Llamadas extends CI_Controller {
                     $ip =$this->input->ip_address();
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
+
+                    $traeContacto=$this->Contacto->getContacto($contacto);
+                    echo json_encode($traeContacto);
 
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -259,6 +291,9 @@ class Llamadas extends CI_Controller {
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
 
+                     $traeContacto=$this->Contacto->getContacto($contacto);
+                     echo json_encode($traeContacto);
+
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
@@ -278,6 +313,9 @@ class Llamadas extends CI_Controller {
                     $ip =$this->input->ip_address();
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
+
+                     $traeContacto=$this->Contacto->getContacto($contacto);
+                     echo json_encode($traeContacto);
 
                       //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                       //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -300,6 +338,9 @@ class Llamadas extends CI_Controller {
                 $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                 $insert=$this->Accion->insert($datos);
 
+                 $traeContacto=$this->Contacto->getContacto($contacto);
+                 echo json_encode($traeContacto);
+
                   //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                   //$insert2=$this->HistorialLlamada->insert($datos2);
                 }
@@ -319,6 +360,9 @@ class Llamadas extends CI_Controller {
                $ip =$this->input->ip_address();
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
+
+                $traeContacto=$this->Contacto->getContacto($contacto);
+                echo json_encode($traeContacto);
 
                 //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                 //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -340,6 +384,9 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+                $traeContacto=$this->Contacto->getContacto($contacto);
+                echo json_encode($traeContacto);
+
                 //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                 //$insert2=$this->HistorialLlamada->insert($datos2);
               }
@@ -359,6 +406,9 @@ class Llamadas extends CI_Controller {
                $ip =$this->input->ip_address();
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
+
+                $traeContacto=$this->Contacto->getContacto($contacto);
+                echo json_encode($traeContacto);
 
                 //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                 //$insert2=$this->HistorialLlamada->insert($datos2);
@@ -380,6 +430,9 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+                $traeContacto=$this->Contacto->getContacto($contacto);
+                echo json_encode($traeContacto);
+
                 //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                 //$insert2=$this->HistorialLlamada->insert($datos2);
               }
@@ -399,6 +452,9 @@ class Llamadas extends CI_Controller {
                $ip =$this->input->ip_address();
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
+
+                $traeContacto=$this->Contacto->getContacto($contacto);
+                echo json_encode($traeContacto);
 
                 //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
                 //$insert2=$this->HistorialLlamada->insert($datos2);
