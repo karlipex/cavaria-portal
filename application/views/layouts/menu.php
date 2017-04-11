@@ -25,6 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </head>
 <body>
 <img class="fondo" src="<?php echo base_url()?>public/img/maxresdefault.jpg">
+    
     <p class="hola">Hola, <?php echo $usuario->completo ?>  &nbsp;</p><span class="sp" id="sp" onclick="options()"> &or;</span>
     <div class="option" id="op">
         <a onclick="change()">Cambiar Contraseña</a>
@@ -40,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <img src="<?php echo base_url() ?>public/img/menus/con-azul.png">
                     <p>Contactos</p>
                    </div>
-        </a>
+              </a>
              <?php
              break;
 
@@ -98,6 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php echo form_close(); ?>
         </div>
     </div>
+    
 </body>
 </html>
 <script>
@@ -107,6 +109,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function closemodal(){
         document.getElementById("modalback").classList.remove("abremodal");
     }
+   
+    
     function presend(){
         pass = document.getElementById("pass").value;
         pass1 = document.getElementById("pass1").value;
@@ -127,4 +131,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             document.getElementById("advise").classList.add("libre");
         }
     }
+
 </script>

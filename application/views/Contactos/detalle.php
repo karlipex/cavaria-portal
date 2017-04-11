@@ -21,7 +21,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div id="second">00</div>                
             </div>
           </div>
+          <select id="detener" name="detener">
+            <option value="0">Opciones de bloqueo</option>
+            <option value="Llamada Entrante">Llamada entrante</option>
+            <option value="Respondiendo Whatsapp">Llamada Whatsapp</option>
+            <option value="Respondiendo Correo">Respondiendo Correo</option>
+            <option value="Descanso">Descanso</option>
+            <option value="Colación">Colación</option>
+            <option value="Requerimiento administrativo">Requerimiento administrativo</option>
+          </select>
     <?php } ?>
+   
+  
     <br>
     <table class="table">
    	  <tr>
@@ -51,13 +62,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <tr class="area"><td>Ultima Acción</td></tr>
       <tr class="area"> 
         <td><i>Fecha:</i></td>
-        <td><?php echo $contacto->fechaLlamada ?></td>
+        <td id="fcall"><?php echo $contacto->fechaLlamada ?></td>
         <td><i>Estado:</i></td>
-        <td><?php echo $contacto->estado ?></td>
+        <td id="ecall"><?php echo $contacto->estado ?></td>
       </tr>
         <tr id="trObs">
           <td><i>Observaciones:</i></td>
-          <td><?php echo $contacto->obs ?></td>
+          <td id="ocont"><?php echo $contacto->obs ?></td>
         </tr>
    	  <span class="buttons">
         <?php if($llamadas == "0"){ ?>
@@ -191,6 +202,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <span class="cierra" onclick="closemodifying()">x</span>
     </div>
 </div>
+<div id="bloqueo" class="modalback">
+        <div class="box">
+            <h1>Tu estado actual es <span id="estate"></span></h1>
+            <div id="timer">
+            <div class="container">
+                <div>Tiempo inactivo: </div>
+                <div id="hour1">00</div>
+                <div class="divider">:</div>
+                <div id="minute1">00</div>
+                <div class="divider">:</div>
+                <div id="second1">00</div>                
+            </div>
+          </div>
+            <input id="reanudar" class="bouts" value="Re Ingresar">
+        </div>
+    </div>
  <!------------MODAL HISTORIAL
  <div id="historial" class="modalback">
   <div class="box">
@@ -222,12 +249,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         segundo: 0
     };
 
+     var tiempo1 = {
+        hora1: 0,
+        minuto1: 0,
+        segundo1: 0
+    };
+
     var tiempo_corriendo = null;
+    var tiempo_corriendo1 = null;
+
+    
 
     $("#body_grill").ready(function(){
         if ( $(this).text() !== 'Nueva Llamada' )
         {
-                                    
             tiempo_corriendo = setInterval(function(){
                 // Segundos
                 tiempo.segundo++;
@@ -249,13 +284,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $("#second").text(tiempo.segundo < 10 ? '0' + tiempo.segundo : tiempo.segundo);
             }, 1000);
         }
-        else 
+        else
         {
             $(this).text('Comenzar');
             clearInterval(tiempo_corriendo);
         }
     })
-    $("#closecount").click(function(){
+    
+   $("#closecount").click(function(){
         if ( $(this).text() == 'Nueva Llamada' )
         {
                                     
@@ -286,6 +322,66 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             clearInterval(tiempo_corriendo);
         }
     })
+
+   $("#detener").click(function(){
+
+     clearInterval(tiempo_corriendo);
+      opt = document.getElementById("detener").value;
+        if(opt != 0){
+            document.getElementById("bloqueo").classList.add("abremodal");
+            clearInterval(tiempo_corriendo);
+            $("#estate").html(opt);
+            document.onkeydown = function (e) {
+            return (e.which || e.keyCode) != 116;
+            clearInterval(tiempo_corriendo);
+            
+             tiempo_corriendo1 = setInterval(function(){
+                // Segundos
+                tiempo1.segundo1++;
+                if(tiempo1.segundo1 >= 60)
+                {
+                    tiempo1.segundo1 = 0;
+                    tiempo1.minuto1++;
+                }      
+
+                // Minutos
+                if(tiempo1.minuto1 >= 60)
+                {
+                    tiempo1.minuto1 = 0;
+                    tiempo1.hora1++;
+                }
+
+                $("#hour1").text(tiempo1.hora1 < 10 ? '0' + tiempo1.hora1 : tiempo1.hora1);
+                $("#minute1").text(tiempo1.minuto1 < 10 ? '0' + tiempo1.minuto1 : tiempo1.minuto1);
+                $("#second1").text(tiempo1.segundo1 < 10 ? '0' + tiempo1.segundo1 : tiempo1.segundo1);
+            }, 1000);
+        };
+        }
+   })
+
+   $("#reanudar").click(function(){
+     document.getElementById("bloqueo").classList.remove("abremodal");
+     $("#detener").val('0');
+     tiempo_corriendo = setInterval(function(){
+      // Segundos
+      tiempo.segundo++;
+      if(tiempo.segundo >= 60)
+      {
+        tiempo.segundo = 0;
+        tiempo.minuto++;
+      }      
+      // Minutos
+      if(tiempo.minuto >= 60)
+      {
+        tiempo.minuto = 0;
+        tiempo.hora++;
+      }
+      $("#hour").text(tiempo.hora < 10 ? '0' + tiempo.hora : tiempo.hora);
+      $("#minute").text(tiempo.minuto < 10 ? '0' + tiempo.minuto : tiempo.minuto);
+      $("#second").text(tiempo.segundo < 10 ? '0' + tiempo.segundo : tiempo.segundo);
+      }, 1000);  
+   })
+
 })
   function modifying(){
         document.getElementById("modifyCont").classList.add("abremodal");
@@ -300,6 +396,7 @@ function closemodifying(){
         document.getElementById("siono").setAttribute("onclick","modifyContact()");
         document.getElementById("nones").setAttribute("type","button");
     }
+ 
     //MODIFICA USUARIO 
     function modifyContact(){
         nombre = document.getElementById("mname").value;
@@ -365,7 +462,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -377,8 +474,10 @@ function closemodifying(){
                     newTime: $("#newTime").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
                     $(".area").css("display","");
@@ -401,7 +500,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -411,8 +510,10 @@ function closemodifying(){
                     stat: $("#status1").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
                     $(".area").css("display","");
@@ -435,7 +536,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -446,7 +547,6 @@ function closemodifying(){
                     age: $("#idmedilink").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                      obs = document.getElementById("obsValue").value;
@@ -454,6 +554,9 @@ function closemodifying(){
                       if(obs == 0){
                         $("#trObs").css("display","");
                       }
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
                 },
                 error: function(){
@@ -470,7 +573,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -480,7 +583,6 @@ function closemodifying(){
                     stat: $("#status3").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
@@ -488,6 +590,9 @@ function closemodifying(){
                       if(obs == 0){
                         $("#trObs").css("display","");
                       }
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
                 },
                 error: function(){
@@ -504,7 +609,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -515,7 +620,6 @@ function closemodifying(){
                     city: $("#ciudad").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
@@ -523,6 +627,9 @@ function closemodifying(){
                       if(obs == 0){
                         $("#trObs").css("display","");
                       }
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
                 },
                 error: function(){
@@ -539,7 +646,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -550,7 +657,6 @@ function closemodifying(){
                     prest: $("#presupuesto").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
@@ -558,6 +664,9 @@ function closemodifying(){
                       if(obs == 0){
                         $("#trObs").css("display","");
                       }
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
                 },
                 error: function(){
@@ -565,10 +674,6 @@ function closemodifying(){
                 }
 
             });
-    }
-    //ya se lo hizo
-    function realizado(){
-
     }
     //prestación
     function nopres(){
@@ -578,7 +683,7 @@ function closemodifying(){
         tiempo = hora+":"+minu+":"+segu;
         $.ajax({
             type: "POST",
-            dataType: "html",
+            dataType: "json",
             url: "<?php echo base_url() ?>nueva-llamada",
             data:  
                 {
@@ -589,7 +694,6 @@ function closemodifying(){
                     prest: $("#prestacion").val(),
                 },
                  success:  function (a) {
-                    console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
@@ -597,6 +701,9 @@ function closemodifying(){
                       if(obs == 0){
                         $("#trObs").css("display","");
                       }
+                     $("#fcall").html(a["fechaLlamada"]);
+                     $("#ecall").html(a["estado"]);
+                     $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
                 },
                 error: function(){
@@ -605,7 +712,7 @@ function closemodifying(){
 
             });
     }
-    
+
       function showArea(){
           obs = document.getElementById("obsValue").value;
           llamadas = document.getElementById("callValue").value;
