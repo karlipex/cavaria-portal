@@ -112,7 +112,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
   });
+  $(document).ready(function() {
+      $("#region").change(function() {
+        $("#region option:selected").each(function() {
+          region = $('#region').val();
+          $.post("<?php echo base_url()?>trae-provincias", {
+            region : region
+          }, function(data) {
+            $("#provincia").html(data);
+          });
+        });
+      })
+    });
+
+  $(document).ready(function() {
+      $("#provincia").change(function() {
+        $("#provincia option:selected").each(function() {
+          provincia = $('#provincia').val();
+          $.post("<?php echo base_url()?>trae-comunas", {
+            provincia : provincia
+          }, function(data) {
+            $("#comuna").html(data);
+          });
+        });
+      })
+    });
 </script>
+
    <div class="modalback" id="eliminarCont">
             <div class="box">
                 <p>Seguro quieres eliminar este contacto?</p>
@@ -124,13 +150,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
      <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
     
      <?php } else {?>
-     <a class="travieso" onclick="abre()" id="btn-comenzar">Nueva Llamada</a>
+     <a class="travieso" onclick="abre()" id="btn-comenzar">Terminar Llamada</a>
      <?php } ?>
      <a class="travieso" href="<?php echo base_url()?>reporte-contacto/<?php echo $contacto->idcontacto ?>">Reporte</a>
 
      <div id="newllamada" class="modalback">
      <div class="box">
-       <h3>Nueva Llamada</h3>
+       <h3>Terminar Llamada</h3>
         <select id="opciones" name="opciones" onchange="opcionLlamada()">
             <option value="0">Seleccione una opción</option>
             <option value="1">Llamar de nuevo</option>
@@ -170,7 +196,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
              <input type="time" id="newTime" style="display:none" onchange="actButtonCerrarNewDate()">
          </div>
          <div id="otraCiudad" style="display: none">
-            <input type="text" id="ciudad" placeholder="Ingrese ciudad" maxlength="100" onchange="actButtonCerrarOtraCiudad()">
+            <select id="region" name="region">
+              <option value="0">Selecciona una región</option>
+             <?php foreach ($regiones as $region ) { ?>
+               <option value="<?php echo $region->id ?>"><?php echo $region->nombre ?></option>
+             <?php } ?>
+            </select>
+            <select name="provincia" id="provincia">
+               <option value="0">Selecciona una provincia</option>
+           </select>
+            <select name="comuna" id="comuna" onchange="actButtonCerrarOtraCiudad()">
+               <option value="0">Selecciona una comuna</option>
+           </select>
          </div>
          <div id="fueraPresupuesto" style="display: none">
             <input type="text" id="presupuesto" onkeyup="format(this)" placeholder="Presupuesto" maxlength="9" onchange="actButtonCerrarPresupuesto()">
@@ -617,7 +654,7 @@ function closemodifying(){
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status3").val(),
-                    city: $("#ciudad").val(),
+                    comuna: $("#comuna").val(),
                 },
                  success:  function (a) {
                     document.getElementById("newllamada").classList.remove("abremodal");

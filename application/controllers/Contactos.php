@@ -83,6 +83,7 @@ class Contactos extends CI_Controller {
         $tratamientos=$this->Tratamiento->listTratamiento();
         $llamadas=$this->Llamada->countLlamada($id);
         $historials=$this->HistorialLlamada->listHistorialPersonal($id);
+        $regiones=$this->Region->listRegiones();
         if($usuario->permisos == "1000" || $usuario->permisos == "1001" )
         {
           $contacto=$this->Contacto->getContacto($id);
@@ -93,7 +94,7 @@ class Contactos extends CI_Controller {
           $this->layout->setDescripcion("Detalle Contactos ".$id);
           $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
           $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js",base_url()."public/js/w2ui.js",base_url()."public/js/countdown.js"));
-          $this->layout->view('detalle',compact('usuario','contacto','tratamientos','llamadas','historials'));
+          $this->layout->view('detalle',compact('usuario','contacto','tratamientos','llamadas','historials','regiones'));
         }
         else
         {
@@ -249,7 +250,7 @@ class Contactos extends CI_Controller {
        // Cerrar el documento PDF y preparamos la salida
        // Este método tiene varias opciones, consulte la documentación para más información.
         $nombre_archivo = utf8_decode("Contacto ".$id.".pdf");
-        $pdf->Output($nombre_archivo, 'I');
+        $pdf->Output($nombre_archivo, 'D');
 
     }
     else

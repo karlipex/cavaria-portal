@@ -71,6 +71,10 @@ $route['eliminar-contacto/(:num)']='contactos/eliminar/$1';
 $route['reporte-contacto/(:num)']='contactos/reporte/$1';
 $route['get-contacto/(:num)']='contactos/getContacto/$1';
 
+//URL PROVINCIAS
+$route['trae-provincias']='provincias/traeProvincias';
+$route['trae-comunas']='comunas/traeComunas';
+
 //URL LLAMADAS
 $route['nueva-llamada']='llamadas/nueva';
 $route['trae-llamadas/(:num)']='llamadas/traeLlamadas/$1';

@@ -234,9 +234,11 @@ class Llamadas extends CI_Controller {
 
             case 'De otra ciudad':
                   
-                  $ciudad=$this->input->post('city');
+                  $comuna=$this->input->post('comuna');
+                  echo $comuna;
+                  exit;
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'De otra ciudad : '.$ciudad,'estado'=>'No llamar más');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'De otro lugar : '.$comuna,'estado'=>'No llamar más');
                   $update=$this->Contacto->update($datos1,$contacto);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'De otra ciudad');
