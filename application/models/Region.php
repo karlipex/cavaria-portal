@@ -8,7 +8,10 @@ class Region extends CI_Model {
     $query=$this->db->select("id,nombre",false)
     ->from("region")
     ->get();
-    return $query->result(); 
+    if($query->num_rows()>0)
+    {
+      return $query->result();
+    } 
  }
 
 }

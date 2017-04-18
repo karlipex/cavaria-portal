@@ -70,14 +70,19 @@ $route['modifica-contacto']='contactos/update';
 $route['eliminar-contacto/(:num)']='contactos/eliminar/$1';
 $route['reporte-contacto/(:num)']='contactos/reporte/$1';
 $route['get-contacto/(:num)']='contactos/getContacto/$1';
+$route['siguiente-contacto']='contactos/siguiente';
 
 //URL PROVINCIAS
+$route['trae-regiones']='regiones/getRegiones';
 $route['trae-provincias']='provincias/traeProvincias';
 $route['trae-comunas']='comunas/traeComunas';
 
 //URL LLAMADAS
 $route['nueva-llamada']='llamadas/nueva';
 $route['trae-llamadas/(:num)']='llamadas/traeLlamadas/$1';
+
+//URL TIEMPOS
+$route['tiempo-fuera']='tiempos/insertTime';
 
 //URL EMPLEADOS
 $route['menu-empleados']='empleados/menu';

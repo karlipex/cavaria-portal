@@ -258,6 +258,30 @@ class Contactos extends CI_Controller {
       redirect(base_url(),  301);
     }
   }
+  
+  public function siguiente()
+  {
+    if(!empty($this->session_id))
+    {
+      $contacto=$this->Contacto->listContactoCape();
+          if(empty($contacto))
+          {
+            $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
+             redirect(base_url()."error",  301);
+
+          } else {
+          
+           $id=$contacto->idcontacto;
+           $datos=array("ocupado"=>"S");
+           $update=$this->Contacto->update($datos,$id);
+           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+        }
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
 
   public function update()
   {
@@ -371,6 +395,9 @@ class Contactos extends CI_Controller {
       $usuario=$this->Usuario->getUsuario($us);
       if( $this->input->post())
       {
+        date_default_timezone_set("UTC");
+        date_default_timezone_set("America/Santiago");
+        $nuevaIteracion=date("Y-m-d H:i:s");
         $nombre=$this->input->post('nombre');
         $email=$this->input->post('email');
         $nuemero=$this->input->post('numero');
@@ -378,7 +405,7 @@ class Contactos extends CI_Controller {
         $descuento=$this->input->post('descuento');
         $origen=$this->input->post('origen');
         $campana=$this->input->post('campana');
-        $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana);
+        $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'En espera de llamado');
         $insert=$this->Contacto->insert($datos);
         if($insert != 0)
         {

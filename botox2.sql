@@ -50,6 +50,7 @@ create table empleado
   ciudad varchar(100)not null,
   correo varchar(100)not null,
   estado varchar(100),
+  ocupado char(1)not null,
   constraint pk_empleado primary key(idempleado)
 );
 
@@ -642,6 +643,17 @@ INSERT INTO comuna (id,nombre,idProvincia) VALUES
 (346, 'General Lagos', 2);
 
 
+create table tiempo
+(
+  idtiempo int not null auto_increment,
+  usuario int not null,
+  descripcion varchar(250)not null,
+  tiempo timestamp,
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  constraint pk_tiempo primary key(idtiempo),
+  constraint fk_tiem_usu foreign key(usuario)references usuario(idusuario)
+); 
+alter table tiempo auto_increment=1000;
 
 select * from contacto;
 select * from accion;
@@ -652,7 +664,8 @@ drop database botox;
 
 delete from llamada where contacto = 1000;
 
-SELECT u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(ll.tiempoLlamada))) AS horas FROM llamada ll INNER JOIN usuario u on ll.usuario = u.idusuario   group by u.usuario;
+select u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(t.tiempo))) AS tiempo_muerto from tiempo t INNER JOIN usuario u on t.usuario = u.idusuario group by u.usuario;
 
+SELECT u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(ll.tiempoLlamada))) AS horas FROM llamada ll INNER JOIN usuario u on ll.usuario = u.idusuario   group by u.usuario;
 
 

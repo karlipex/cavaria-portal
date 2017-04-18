@@ -10,7 +10,11 @@ class Provincia extends CI_Model {
     ->from("provincia")
     ->where($where)
     ->get();
-    return $query->result(); 
+    if($query->num_rows()>0)
+    {
+      return $query->result(); 
+    }
+    
  }
 
 }

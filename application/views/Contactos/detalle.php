@@ -2,6 +2,31 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <body id="body_grill" onload="showArea()">
+<script>
+// AJAX call for autocomplete 
+$(document).ready(function(){
+  $("#search-box").keyup(function(){
+    $.ajax({
+    type: "POST",
+    url: "<?php echo base_url() ?>trae-comunas",
+    data:'keyword='+$(this).val(),
+    beforeSend: function(){
+      $("#search-box").css("background","#FFF url(<?php echo base_url()?>public/img/LoaderIcon.gif) no-repeat 165px");
+    },
+    success: function(data){
+      $("#suggesstion-box").show();
+      $("#suggesstion-box").html(data);
+      $("#search-box").css("background","#FFF");
+    }
+    });
+  });
+});
+//To select country name
+function selectCiudad(val) {
+$("#search-box").val(val);
+$("#suggesstion-box").hide();
+}
+</script>
 <div class="grilla">
 <h2>Detalle Contacto</h2>
     <div class=" black">
@@ -20,16 +45,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="divider">:</div>
                 <div id="second">00</div>                
             </div>
-          </div>
-          <select id="detener" name="detener">
-            <option value="0">Opciones de bloqueo</option>
-            <option value="Llamada Entrante">Llamada entrante</option>
-            <option value="Respondiendo Whatsapp">Llamada Whatsapp</option>
-            <option value="Respondiendo Correo">Respondiendo Correo</option>
-            <option value="Descanso">Descanso</option>
-            <option value="Colación">Colación</option>
-            <option value="Requerimiento administrativo">Requerimiento administrativo</option>
+             <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
+    
+            <?php } else {?>
+            <select id="detener" name="detener">
+               <option value="0">Opciones de bloqueo</option>
+               <option value="Llamada Entrante">Llamada entrante</option>
+               <option value="Respondiendo Whatsapp">Llamada Whatsapp</option>
+               <option value="Respondiendo Correo">Respondiendo Correo</option>
+               <option value="Descanso">Descanso</option>
+               <option value="Colación">Colación</option>
+               <option value="Requerimiento administrativo">Requerimiento administrativo</option>
           </select>
+          <?php } ?>
+          </div>
     <?php } ?>
    
   
@@ -112,33 +141,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
   });
-  $(document).ready(function() {
-      $("#region").change(function() {
-        $("#region option:selected").each(function() {
-          region = $('#region').val();
-          $.post("<?php echo base_url()?>trae-provincias", {
-            region : region
-          }, function(data) {
-            $("#provincia").html(data);
-          });
-        });
-      })
-    });
-
-  $(document).ready(function() {
-      $("#provincia").change(function() {
-        $("#provincia option:selected").each(function() {
-          provincia = $('#provincia').val();
-          $.post("<?php echo base_url()?>trae-comunas", {
-            provincia : provincia
-          }, function(data) {
-            $("#comuna").html(data);
-          });
-        });
-      })
-    });
+ 
 </script>
-
    <div class="modalback" id="eliminarCont">
             <div class="box">
                 <p>Seguro quieres eliminar este contacto?</p>
@@ -153,6 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
      <a class="travieso" onclick="abre()" id="btn-comenzar">Terminar Llamada</a>
      <?php } ?>
      <a class="travieso" href="<?php echo base_url()?>reporte-contacto/<?php echo $contacto->idcontacto ?>">Reporte</a>
+     <a class="travieso" href="<?php echo base_url()?>siguiente-contacto">Siguente Contacto</a>
 
      <div id="newllamada" class="modalback">
      <div class="box">
@@ -196,18 +201,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
              <input type="time" id="newTime" style="display:none" onchange="actButtonCerrarNewDate()">
          </div>
          <div id="otraCiudad" style="display: none">
-            <select id="region" name="region">
-              <option value="0">Selecciona una región</option>
-             <?php foreach ($regiones as $region ) { ?>
-               <option value="<?php echo $region->id ?>"><?php echo $region->nombre ?></option>
-             <?php } ?>
-            </select>
-            <select name="provincia" id="provincia">
-               <option value="0">Selecciona una provincia</option>
-           </select>
-            <select name="comuna" id="comuna" onchange="actButtonCerrarOtraCiudad()">
-               <option value="0">Selecciona una comuna</option>
-           </select>
+            <input type="text" id="search-box" placeholder="Comuna" onchange="actButtonCerrarOtraCiudad()" />
+            <div id="suggesstion-box"></div>
          </div>
          <div id="fueraPresupuesto" style="display: none">
             <input type="text" id="presupuesto" onkeyup="format(this)" placeholder="Presupuesto" maxlength="9" onchange="actButtonCerrarPresupuesto()">
@@ -252,7 +247,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div id="second1">00</div>                
             </div>
           </div>
-            <input id="reanudar" class="bouts" value="Re Ingresar">
+            <input id="reanudar" class="bouts" value="Re Ingresar" onclick="takeTime()">
         </div>
     </div>
  <!------------MODAL HISTORIAL
@@ -360,19 +355,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     })
 
-   $("#detener").click(function(){
+   $("#detener").change(function(){
 
      clearInterval(tiempo_corriendo);
       opt = document.getElementById("detener").value;
         if(opt != 0){
             document.getElementById("bloqueo").classList.add("abremodal");
             clearInterval(tiempo_corriendo);
-            $("#estate").html(opt);
-            document.onkeydown = function (e) {
-            return (e.which || e.keyCode) != 116;
-            clearInterval(tiempo_corriendo);
-            
-             tiempo_corriendo1 = setInterval(function(){
+              tiempo_corriendo1 = setInterval(function(){
                 // Segundos
                 tiempo1.segundo1++;
                 if(tiempo1.segundo1 >= 60)
@@ -392,13 +382,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $("#minute1").text(tiempo1.minuto1 < 10 ? '0' + tiempo1.minuto1 : tiempo1.minuto1);
                 $("#second1").text(tiempo1.segundo1 < 10 ? '0' + tiempo1.segundo1 : tiempo1.segundo1);
             }, 1000);
+            $("#estate").html(opt);
+            document.onkeydown = function (e) {
+            return (e.which || e.keyCode) != 116;
+            clearInterval(tiempo_corriendo);
         };
         }
    })
-
    $("#reanudar").click(function(){
      document.getElementById("bloqueo").classList.remove("abremodal");
      $("#detener").val('0');
+      clearInterval(tiempo_corriendo1);
+              tiempo1.hora1 =0;
+              tiempo1.minuto1=0;
+              tiempo1.segundo1=0;
+              second1.innerHTML="00";
+              minute1.innerHTML="00";
+              hour1.innerHTML="00";
+
      tiempo_corriendo = setInterval(function(){
       // Segundos
       tiempo.segundo++;
@@ -416,7 +417,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       $("#hour").text(tiempo.hora < 10 ? '0' + tiempo.hora : tiempo.hora);
       $("#minute").text(tiempo.minuto < 10 ? '0' + tiempo.minuto : tiempo.minuto);
       $("#second").text(tiempo.segundo < 10 ? '0' + tiempo.segundo : tiempo.segundo);
-      }, 1000);  
+      }, 1000); 
    })
 
 })
@@ -633,6 +634,7 @@ function closemodifying(){
                     w2ui["grid2"].reload();
                 },
                 error: function(){
+                    alert("Error qliao error.");
                     console.log();
                 }
 
@@ -654,9 +656,10 @@ function closemodifying(){
                     tiempo: tiempo,
                     option: $("#opciones").val(),
                     stat: $("#status3").val(),
-                    comuna: $("#comuna").val(),
+                    comuna: $("#search-box").val(),
                 },
                  success:  function (a) {
+                  console.log(a);
                     document.getElementById("newllamada").classList.remove("abremodal");
                     document.getElementById("btn-comenzar").style.display="none";
                     obs = document.getElementById("obsValue").value;
@@ -667,10 +670,10 @@ function closemodifying(){
                      $("#fcall").html(a["fechaLlamada"]);
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
-                    w2ui["grid2"].reload();
+                      w2ui["grid2"].reload();
                 },
                 error: function(){
-                    console.log();
+                    console.log("Error");
                 }
 
             });
@@ -760,4 +763,29 @@ function closemodifying(){
             $("#trObs").css("display","none");
           }
       }
+function takeTime(){
+    stte = document.getElementById("estate").textContent;
+    hor1 = document.getElementById("hour1").textContent;
+    min1 = document.getElementById("minute1").textContent;
+    sec1 = document.getElementById("second1").textContent;
+    time = hor1+":"+min1+":"+sec1;
+       $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: "<?php echo base_url() ?>tiempo-fuera",
+            data:  
+                {
+                    time: time,
+                    stte: $("#estate").text(),
+                },
+                 success:  function (a) {
+                    console.log(a);
+                    console.log("El tiempo fuera en "+stte+" ha sido de "+time);
+                },
+                error: function(){
+                    console.log("hola, todo mal");
+                }
+
+            });
+}
 </script>

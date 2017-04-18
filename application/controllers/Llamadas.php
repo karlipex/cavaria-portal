@@ -33,12 +33,13 @@ class Llamadas extends CI_Controller {
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                      if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta','ocupado'=>'N');
                      } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta','ocupado'=>'N');
                      }
                      $update=$this->Contacto->update($datos1,$contacto);
+
                      $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'No contesta');
                      $insert1=$this->Llamada->insert($datos2);
                      if ($insert1 != 0) {
@@ -62,7 +63,7 @@ class Llamadas extends CI_Controller {
                       $llamada=date('Y-m-d '.$tiempo.'');
                       $nuevaIteracion=$newDate." ".$newTime.":00";
                       $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Contesta, pero llama después');
+                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Contesta, pero llama después','ocupado'=>'N');
                       $update=$this->Contacto->update($datos1,$contacto);
                     
                       $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Contesta, pero llama después');
@@ -89,12 +90,13 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                    if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz','ocupado'=>'N');
                     } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+21 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz','ocupado'=>'N');
                     }
                      $update=$this->Contacto->update($datos1,$contacto);
+
                      $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Buzón de voz');
                      $insert1=$this->Llamada->insert($datos2);
                      if ($insert1 != 0) {
@@ -117,7 +119,7 @@ class Llamadas extends CI_Controller {
                      $nuevaIteracion=date("Y-m-d 10:00:00",(strtotime("+7 Days")));
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                     $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará');
+                     $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará','ocupado'=>'N');
                      $update=$this->Contacto->update($datos1,$contacto);
 
                      $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Llamará');
@@ -146,7 +148,7 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $nuevaIteracion=date($newDate." ".$newTime.":00");
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                   $datos1=array('fechaLLamada'=>$fechaLLamada,'nuevaIteracion'=>$nuevaIteracion,'obs'=>'Próximo llamado el: '.$fecha,'estado'=>'Embarazada');
+                   $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Embarazada','ocupado'=>'N');
                    $update=$this->Contacto->update($datos1,$contacto);
                     
                    $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Embarazada');
@@ -169,8 +171,9 @@ class Llamadas extends CI_Controller {
 
                   $llamada=date('Y-m-d '.$tiempo.'');
                   $idMedilink=$this->input->post("age");
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda','ocupado'=>'N');
                   $update=$this->Contacto->update($datos1,$contacto);
+
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Agenda');
                   $insert1=$this->Llamada->insert($datos2);
                   if ($insert1 != 0) {
@@ -191,7 +194,7 @@ class Llamadas extends CI_Controller {
             case 'Solicita no llamar de nuevo':
                  
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solicita no llamar de nuevo ','estado'=>'No llamar más');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solicita no llamar de nuevo ','estado'=>'No llamar más','ocupado'=>'N');
                   $update=$this->Contacto->update($datos1,$contacto);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solicita no llamar de nuevo');
@@ -213,7 +216,7 @@ class Llamadas extends CI_Controller {
             case 'Solo cotizando':
 
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo cotizando ','estado'=>'No llamar más');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo cotizando ','estado'=>'No llamar más','ocupado'=>'N');
                   $update=$this->Contacto->update($datos1,$contacto);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solo cotizando');
@@ -235,10 +238,9 @@ class Llamadas extends CI_Controller {
             case 'De otra ciudad':
                   
                   $comuna=$this->input->post('comuna');
-                  echo $comuna;
-                  exit;
+                  $getComuna=$this->Comuna->getComuna($comuna);
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'De otro lugar : '.$comuna,'estado'=>'No llamar más');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'De otra '.$getComuna->region.', provincia: '.$getComuna->provincia.',  comuna: '.$getComuna->nombre,'estado'=>'No llamar más','ocupado'=>'N');
                   $update=$this->Contacto->update($datos1,$contacto);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'De otra ciudad');
@@ -260,7 +262,7 @@ class Llamadas extends CI_Controller {
             case 'Enfermedad autoinmune':
 
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Enfermedad autoinmune ','estado'=>'No llamar más');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Enfermedad autoinmune ','estado'=>'No llamar más','ocupado'=>'N');
                 $update=$this->Contacto->update($datos1,$contacto);
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Enfermedad autoinmune');
@@ -282,7 +284,7 @@ class Llamadas extends CI_Controller {
              case 'Solo curiosidad':
 
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo curiosidad','estado'=>'No llamar más');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo curiosidad','estado'=>'No llamar más','ocupado'=>'N');
                 $update=$this->Contacto->update($datos1,$contacto);
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solo curiosidad');
@@ -305,7 +307,7 @@ class Llamadas extends CI_Controller {
                   
                 $presupuesto= $this->input->post("prest");
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Fuera de presupuesto, estimado a pagar: '.$presupuesto,'estado'=>'No llamar más');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Fuera de presupuesto, estimado a pagar: '.$presupuesto,'estado'=>'No llamar más','ocupado'=>'N');
                 $update=$this->Contacto->update($datos1,$contacto);
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Fuera de presupuesto');
@@ -329,7 +331,7 @@ class Llamadas extends CI_Controller {
             case 'No tengo dinero':
                
                $llamada=date('Y-m-d '.$tiempo.'');
-               $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'No tengo dinero','estado'=>'No llamar más');
+               $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'No tengo dinero','estado'=>'No llamar más','ocupado'=>'N');
                $update=$this->Contacto->update($datos1,$contacto);
 
                $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'No tengo dinero');
@@ -352,7 +354,7 @@ class Llamadas extends CI_Controller {
             case 'Ya se lo hizo':
                   
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya se lo hizo','estado'=>'No llamar más');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya se lo hizo','estado'=>'No llamar más','ocupado'=>'N');
               $update=$this->Contacto->update($datos1,$contacto);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Ya se lo hizo');
@@ -375,7 +377,7 @@ class Llamadas extends CI_Controller {
             case 'Ya lo llamaron':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya lo llamaron','estado'=>'No llamar más');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya lo llamaron','estado'=>'No llamar más','ocupado'=>'N');
               $update=$this->Contacto->update($datos1,$contacto);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Ya lo llamaron');
@@ -398,7 +400,7 @@ class Llamadas extends CI_Controller {
             case 'Número no corresponde':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Número no corresponde','estado'=>'No llamar más');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Número no corresponde','estado'=>'No llamar más','ocupado'=>'N');
               $update=$this->Contacto->update($datos1,$contacto);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Número no corresponde');
@@ -421,7 +423,7 @@ class Llamadas extends CI_Controller {
               
               $prestacion=$this->input->post("prest");    
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Prestación no existe: '.$prestacion,'estado'=>'No llamar más');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Prestación no existe: '.$prestacion,'estado'=>'No llamar más','ocupado'=>'N');
               $update=$this->Contacto->update($datos1,$contacto);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Prestación no existe');
@@ -444,7 +446,7 @@ class Llamadas extends CI_Controller {
             case 'Pensó que la evaluación era gratis':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Pensó que la evaluación era gratis','estado'=>'No llamar más');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Pensó que la evaluación era gratis','estado'=>'No llamar más','ocupado'=>'N');
               $update=$this->Contacto->update($datos1,$contacto);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Pensó que la evaluación era gratis');

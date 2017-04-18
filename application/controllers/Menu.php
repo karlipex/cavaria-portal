@@ -70,15 +70,30 @@ class Menu extends CI_Controller {
       {
        $us=$this->session_id;
        $usuario=$this->Usuario->getUsuario($us);
+       if($usuario->permisos == 1001)
+       {
+          $contacto=$this->Contacto->listContactoCape();
+          if(empty($contacto))
+          {
+            $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
+             redirect(base_url()."error",  301);
 
-	   $this->layout->setLayout('menu');
-	   $this->layout->setTitle("Menu Principal");
-	   $this->layout->setKeywords("Menu Principal");
-	   $this->layout->setDescripcion("Menu Principal");
-	   $this->layout->css(array(base_url()."public/css/menu.css"));
-	   //$this->layout->js(array("https://code.jquery.com/jquery-1.12.4.min.js"));
-	   $this->layout->js(array(base_url()."public/js/funciones.js"));
-	   $this->layout->view('menu',compact('usuario'));
+          } else {
+          
+           $id=$contacto->idcontacto;
+           $datos=array("ocupado"=>"S");
+           $update=$this->Contacto->update($datos,$id);
+           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+        }
+       }
+	     $this->layout->setLayout('menu');
+	     $this->layout->setTitle("Menu Principal");
+	     $this->layout->setKeywords("Menu Principal");
+	     $this->layout->setDescripcion("Menu Principal");
+	     $this->layout->css(array(base_url()."public/css/menu.css"));
+	     //$this->layout->js(array("https://code.jquery.com/jquery-1.12.4.min.js"));
+	     $this->layout->js(array(base_url()."public/js/funciones.js"));
+	     $this->layout->view('menu',compact('usuario'));
 	  }
 	  else
 	  {

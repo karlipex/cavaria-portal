@@ -30,13 +30,26 @@ class Contacto extends CI_Model {
  public function getContacto($id)
  {
    $where=array("c.idcontacto"=>$id);
-   $query=$this->db->select("c.idcontacto,c.nombre,c.email,c.telefono,c.tratamiento,t.descripcion,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y')as fechaIngreso,DATE_FORMAT(c.fechaLlamada,'%d/%m/%Y %H:%m')as fechaLlamada,c.origen,c.campana,c.estado,c.obs",false)
+   $query=$this->db->select("c.idcontacto,c.nombre,c.email,c.telefono,c.tratamiento,t.descripcion,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y')as fechaIngreso,DATE_FORMAT(c.fechaLlamada,'%d/%m/%Y %H:%m')as fechaLlamada,c.origen,c.campana,c.estado,c.obs,c.ocupado",false)
    ->from("contacto c")
    ->join("tratamiento t","c.tratamiento= t.idtratamiento")
    ->where($where)
    ->get();
  	return $query->row();
 
+ }
+
+ public function listContactoCape()
+ {
+   $day= new DateTime("now");
+   $curr_date = $day->format('Y-m-d ');
+   $where=array("DATE_FORMAT(nuevaIteracion,'%Y-%m-%d')"=>$curr_date,"estado !="=>"No llamar más","ocupado !="=>"S");
+   $query=$this->db->select("idcontacto,DATE_FORMAT(nuevaIteracion,'%Y-%m-%d') as fecha,estado",false)
+   ->from("contacto")
+   ->where($where)
+   ->order_by("idcontacto","random")
+   ->get();
+    return $query->row();
  }
 
   public function update($datos=array(),$id)

@@ -12,6 +12,7 @@ class Provincias extends CI_Controller {
 
   public function traeProvincias()
   {
+     $options="";
     if($this->input->post('region'))
     {
       $pro=$this->input->post('region');
