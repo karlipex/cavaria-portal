@@ -76,16 +76,21 @@ class Menu extends CI_Controller {
           if(empty($contacto))
           {
             $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
-             redirect(base_url()."error",  301);
+            redirect(base_url()."error",  301);
 
           } else {
-          
-           $id=$contacto->idcontacto;
-           $datos=array("ocupado"=>"S");
-           $update=$this->Contacto->update($datos,$id);
-           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-        }
+             $id=$contacto->idcontacto;
+             $datos=array("ocupado"=>"S");
+             $update=$this->Contacto->update($datos,$id);
+             redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+          }
        }
+
+       $countNew=$this->Contacto->countNewContact();
+       $countCall=$this->Contacto->countCallContact();
+       $countAgend=$this->Contacto->countAgendContact();
+       $countNotCall=$this->Contacto->countNotCallContact();
+
 	     $this->layout->setLayout('menu');
 	     $this->layout->setTitle("Menu Principal");
 	     $this->layout->setKeywords("Menu Principal");
@@ -93,7 +98,7 @@ class Menu extends CI_Controller {
 	     $this->layout->css(array(base_url()."public/css/menu.css"));
 	     //$this->layout->js(array("https://code.jquery.com/jquery-1.12.4.min.js"));
 	     $this->layout->js(array(base_url()."public/js/funciones.js"));
-	     $this->layout->view('menu',compact('usuario'));
+	     $this->layout->view('menu',compact('usuario','countNew','countCall','countAgend','countNotCall'));
 	  }
 	  else
 	  {
@@ -165,9 +170,9 @@ class Menu extends CI_Controller {
         $usuario=$this->Usuario->getUsuario($us);
         
         $this->layout->setLayout('menu');
-        $this->layout->setTitle("Cambiar Contraseña");
-        $this->layout->setKeywords("Cambiar Contraseña");
-        $this->layout->setDescripcion("Cambiar Contraseña");
+        $this->layout->setTitle("Error");
+        $this->layout->setKeywords("Error");
+        $this->layout->setDescripcion("Error");
         $this->layout->css(array(base_url()."public/css/menu.css"));
         //$this->layout->js(array("https://code.jquery.com/jquery-1.12.4.min.js"));
         $this->layout->js(array(base_url()."public/js/funciones.js"));

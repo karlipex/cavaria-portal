@@ -157,7 +157,7 @@ $("#suggesstion-box").hide();
      <a class="travieso" onclick="abre()" id="btn-comenzar">Terminar Llamada</a>
      <?php } ?>
      <a class="travieso" href="<?php echo base_url()?>reporte-contacto/<?php echo $contacto->idcontacto ?>">Reporte</a>
-     <a class="travieso" href="<?php echo base_url()?>siguiente-contacto">Siguente Contacto</a>
+     <a class="travieso" id="sigcon" href="<?php echo base_url()?>siguiente-contacto" style="opacity: 0; poiter-events: none">Siguente Contacto</a>
 
      <div id="newllamada" class="modalback">
      <div class="box">
@@ -523,6 +523,9 @@ function closemodifying(){
                         $("#trObs").css("display","");
                       }
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     console.log();
@@ -559,9 +562,12 @@ function closemodifying(){
                         $("#trObs").css("display","");
                       }
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
-                    console.log();
+                    console.log(a);
                 }
 
             });
@@ -596,6 +602,9 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     console.log();
@@ -632,6 +641,9 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     alert("Error qliao error.");
@@ -671,6 +683,9 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                       w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     console.log("Error");
@@ -708,6 +723,9 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     console.log();
@@ -745,6 +763,9 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     document.getElementById("timer").style.display="none";
+                     document.getElementById("sigcon").style.opacity="1";
+                     document.getElementById("sigcon").style.pointerEvents="All";
                 },
                 error: function(){
                     console.log();

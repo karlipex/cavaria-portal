@@ -361,6 +361,9 @@ class Contactos extends CI_Controller {
   {
     if( $this->input->post())
     {
+       date_default_timezone_set("UTC");
+       date_default_timezone_set("America/Santiago");
+       $nuevaIteracion=date("Y-m-d H:i:s");
        $nombre=$this->input->post('first_name');
        $apellidos=$this->input->post('last_name');
        $email=$this->input->post('email');
@@ -369,7 +372,7 @@ class Contactos extends CI_Controller {
        $trat=$this->Tratamiento->search($tratamiento);
        $oferta=$this->input->post('offer');
        $completo=$nombre.' '.$apellidos;
-       $datos=array('nombre'=>$completo,'email'=>$email,'telefono'=>$fono,'tratamiento'=>$trat->idtratamiento,'descuento'=>$oferta,'origen'=>'Contacto Facebook');
+       $datos=array('nombre'=>$completo,'email'=>$email,'telefono'=>$fono,'tratamiento'=>$trat->idtratamiento,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>2,'descuento'=>$oferta,'origen'=>'Contacto Facebook','estado'=>'En espera de llamado','ocupado'=>'N');
        $insert=$this->Contacto->insert($datos);
        if($insert != 0)
        {
@@ -405,7 +408,7 @@ class Contactos extends CI_Controller {
         $descuento=$this->input->post('descuento');
         $origen=$this->input->post('origen');
         $campana=$this->input->post('campana');
-        $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'En espera de llamado');
+        $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>2,'estado'=>'En espera de llamado','ocupado'=>'N');
         $insert=$this->Contacto->insert($datos);
         if($insert != 0)
         {

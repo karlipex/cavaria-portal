@@ -456,3 +456,10 @@ body{
     background-color: #ecf8fd;
     cursor: pointer;
 }
+
+.content{
+    position: relative;
+    margin: 50px auto;
+    width: 80%;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}

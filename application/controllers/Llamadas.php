@@ -33,10 +33,10 @@ class Llamadas extends CI_Controller {
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                      if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N');
                      } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'No contesta','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N');
                      }
                      $update=$this->Contacto->update($datos1,$contacto);
 
@@ -63,7 +63,7 @@ class Llamadas extends CI_Controller {
                       $llamada=date('Y-m-d '.$tiempo.'');
                       $nuevaIteracion=$newDate." ".$newTime.":00";
                       $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Contesta, pero llama después','ocupado'=>'N');
+                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>1,'estado'=>'Contesta, pero llama después','ocupado'=>'N');
                       $update=$this->Contacto->update($datos1,$contacto);
                     
                       $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Contesta, pero llama después');
@@ -90,10 +90,10 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                    if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N');
                     } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+21 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Buzón de voz','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N');
                     }
                      $update=$this->Contacto->update($datos1,$contacto);
 
@@ -136,9 +136,36 @@ class Llamadas extends CI_Controller {
                          //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, Llamará.');
                          //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
+              break;
 
-                    
-                   exit;
+              case 'Corta llamada':
+                     
+                     $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+3 Hours")));
+                     $tope=date('Y-m-d 19:00:00');
+                     $llamada=date('Y-m-d '.$tiempo.'');
+                     $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
+                     if($tope > $nuevaIteracion){
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N');
+                     } else {
+                         $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N');
+                     }
+                     $update=$this->Contacto->update($datos1,$contacto);
+
+                     $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Corta llamada');
+                     $insert1=$this->Llamada->insert($datos2);
+                     if ($insert1 != 0) {
+
+                         $ip =$this->input->ip_address();
+                         $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
+                         $insert=$this->Accion->insert($datos);
+                         $traeContacto=$this->Contacto->getContacto($contacto);
+                         echo json_encode($traeContacto);
+                         //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, corta llamada.');
+                         //$insert2=$this->HistorialLlamada->insert($datos2);
+                     }
+
+
               break;
 
             case 'Embarazada':
@@ -148,7 +175,7 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $nuevaIteracion=date($newDate." ".$newTime.":00");
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                   $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Embarazada','ocupado'=>'N');
+                   $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>6,'estado'=>'Embarazada','ocupado'=>'N');
                    $update=$this->Contacto->update($datos1,$contacto);
                     
                    $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Embarazada');
@@ -171,7 +198,7 @@ class Llamadas extends CI_Controller {
 
                   $llamada=date('Y-m-d '.$tiempo.'');
                   $idMedilink=$this->input->post("age");
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda','ocupado'=>'N');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda','ocupado'=>'N','cita'=>$idMedilink);
                   $update=$this->Contacto->update($datos1,$contacto);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Agenda');

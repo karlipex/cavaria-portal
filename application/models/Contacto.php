@@ -17,6 +17,46 @@ class Contacto extends CI_Model {
      return $query;
  }
 
+ public function countNewContact()
+ {
+    $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->where(array("estado"=>"En espera de llamado"))
+     ->count_all_results();
+     return $query;
+ }
+
+ public function countCallContact()
+ {
+    $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->where(array("estado !="=>"En espera de llamado"))
+     ->count_all_results();
+     return $query;
+ }
+
+ public function countAgendContact()
+ {
+    $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->where(array("estado "=>"Agendo"))
+     ->count_all_results();
+     return $query;
+ }
+
+ public function countNotCallContact()
+ {
+    $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->where(array("estado "=>"No llamar más"))
+     ->count_all_results();
+     return $query;
+ }
+
  public function listContacto()
  {
  	$query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,t.descripcion,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
@@ -42,12 +82,13 @@ class Contacto extends CI_Model {
  public function listContactoCape()
  {
    $day= new DateTime("now");
-   $curr_date = $day->format('Y-m-d ');
-   $where=array("DATE_FORMAT(nuevaIteracion,'%Y-%m-%d')"=>$curr_date,"estado !="=>"No llamar más","ocupado !="=>"S");
-   $query=$this->db->select("idcontacto,DATE_FORMAT(nuevaIteracion,'%Y-%m-%d') as fecha,estado",false)
+   $curr_date = $day->format('Y-m-d');
+   $where=array("DATE_FORMAT(nuevaIteracion,'%Y-%m-%d')"=>$curr_date,"estado !="=>"No llamar más","ocupado !="=>"S","cita"=>0);
+   $query=$this->db->select("idcontacto,DATE_FORMAT(nuevaIteracion,'%Y-%m-%d') as fecha,estado,cita",false)
    ->from("contacto")
    ->where($where)
-   ->order_by("idcontacto","random")
+   //->order_by("idcontacto","random")
+   ->order_by("prioridad","asc")
    ->get();
     return $query->row();
  }
