@@ -121,6 +121,12 @@ function cierraStory(){
 function actButtonTime(){
     document.getElementById("newTime").style.display="block";
 }
+function actDate(){
+  document.getElementById("inicio").style.display="block";
+}
+function actButtonDate(){
+  document.getElementById("fin").style.display="block";
+}
 function actButtonCerrarNewDate(){
     document.getElementById("closecount").style.display="block";
     document.getElementById("closecount").setAttribute("onclick","callDespues1()");
@@ -140,4 +146,10 @@ function actButtonCerrarPresupuesto(){
 function actButtonCerrarNP(){
     document.getElementById("closecount").style.display="block";
     document.getElementById("closecount").setAttribute("onclick","nopres()");
+}
+function getContactos1(){
+  document.getElementById("infoContacto1").style.display="block";
+}
+function closeContactos1(){
+  document.getElementById("infoContacto1").style.display="none";
 }

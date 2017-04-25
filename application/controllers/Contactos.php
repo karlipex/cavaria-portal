@@ -56,6 +56,21 @@ class Contactos extends CI_Controller {
     }
   }
 
+  public function llenar2()
+  {
+    if(!empty($this->session_id))
+    {
+      $contactos=$this->Contacto->listContacto1();
+
+      echo json_encode($contactos);
+
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
   public function getContacto($id)
   {
     if(!empty($this->session_id))
@@ -431,6 +446,38 @@ class Contactos extends CI_Controller {
       redirect(base_url(),  301);
     }
 
+  }
+
+  public function traeContactos()
+  {
+    if(!empty($this->session_id))
+    {
+       if( $this->input->post())
+      {
+        $campana=$this->input->post("campana");
+        $fechaInicio=$this->input->post("fechaInicio");
+        $fechaTermino=$this->input->post("fechaTermino");
+
+        date_default_timezone_set("UTC");
+        date_default_timezone_set("America/Santiago");
+        $start_date=date("Y-m-d", strtotime($fechaInicio));
+        $end_date=date("Y-m-d", strtotime($fechaTermino));
+        
+        $nuevos=$this->Contacto->countNewContact2($campana,$start_date,$end_date);
+        $contactados=$this->Contacto->countCallContact2($campana,$start_date,$end_date);
+        $agendados=$this->Contacto->coundAgendContact2($campana,$start_date,$end_date);
+        
+        $datos=array("nuevos"=>$nuevos,"contactados"=>$contactados,"agendados"=>$agendados);
+
+        echo json_encode($datos);
+
+       
+      }
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
   }
 
 }

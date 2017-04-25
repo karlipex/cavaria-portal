@@ -50,7 +50,6 @@ create table empleado
   ciudad varchar(100)not null,
   correo varchar(100)not null,
   estado varchar(100),
-  ocupado char(1)not null,
   constraint pk_empleado primary key(idempleado)
 );
 
@@ -107,7 +106,6 @@ insert into usuario(empleado,permisos,usuario,password,correo,estado) values
 insert into usuario(empleado,permisos,usuario,password,correo,estado) values
 (1001,1001,'jperalta','77148f84898f3d54be71a6120e795a24049a520b','jperalta@clinicaavaria.cl','Activo');
 
-select * from usuario;
 
 create table accion
 (
@@ -121,8 +119,6 @@ create table accion
  constraint fk_usu_acc foreign key(usuario) references usuario(idusuario)
 );
 alter table accion auto_increment=1000;
-
-select * from accion;
 
 create table tratamiento
 (
@@ -160,9 +156,12 @@ create table contacto
   fechaIngreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fechaLlamada timestamp,
   nuevaIteracion timestamp,
+  prioridad int not null,
   dias int,
   obs varchar(200),
   estado varchar(100),
+  ocupado char(1)not null,
+  cita int not null,
   constraint pk_contacto primary key(idcontacto),
   constraint fk_pro_cont foreign key(tratamiento) references tratamiento(idtratamiento)
 );
@@ -655,12 +654,14 @@ create table tiempo
 ); 
 alter table tiempo auto_increment=1000;
 
-select * from contacto;
 select * from accion;
 select * from usuario;
 select * from llamada;
 select * from historialLlamada;
-drop database botox;
+
+select count(*) from contacto where campana='Campaña 3 zonas' order by campana;
+select * from tiempo;
+select * from contacto;
 
 delete from llamada where contacto = 1000;
 
@@ -668,4 +669,4 @@ select u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(t.tiempo))) AS tiempo_muerto from t
 
 SELECT u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(ll.tiempoLlamada))) AS horas FROM llamada ll INNER JOIN usuario u on ll.usuario = u.idusuario   group by u.usuario;
 
-
+select count(idcontacto) from contacto where estado<>'En espera de llamado';

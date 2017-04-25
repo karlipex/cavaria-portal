@@ -85,20 +85,20 @@ class Menu extends CI_Controller {
              redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
           }
        }
-
-       $countNew=$this->Contacto->countNewContact();
-       $countCall=$this->Contacto->countCallContact();
+      
+       $campanas=$this->Contacto->traeCampana();
+       $countAll=$this->Contacto->countNewContact();
        $countAgend=$this->Contacto->countAgendContact();
-       $countNotCall=$this->Contacto->countNotCallContact();
+       $countCall=$this->Contacto->countCallContact();
+       
 
 	     $this->layout->setLayout('menu');
 	     $this->layout->setTitle("Menu Principal");
 	     $this->layout->setKeywords("Menu Principal");
 	     $this->layout->setDescripcion("Menu Principal");
-	     $this->layout->css(array(base_url()."public/css/menu.css"));
-	     //$this->layout->js(array("https://code.jquery.com/jquery-1.12.4.min.js"));
-	     $this->layout->js(array(base_url()."public/js/funciones.js"));
-	     $this->layout->view('menu',compact('usuario','countNew','countCall','countAgend','countNotCall'));
+	     $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
+	     $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js","http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",base_url()."public/js/w2ui.js"));
+	     $this->layout->view('menu',compact('usuario','campanas','countAll','countAgend','countCall'));
 	  }
 	  else
 	  {

@@ -19,40 +19,90 @@ class Contacto extends CI_Model {
 
  public function countNewContact()
  {
+   $day= new DateTime("now");
+   $curr_date = $day->format('Y-m-d');
+   $where=array("DATE_FORMAT(fechaIngreso,'%Y-%m-%d')"=>$curr_date);
     $query=$this->db 
      ->select("idcontacto")
      ->from("contacto")
-     ->where(array("estado"=>"En espera de llamado"))
+     ->where($where)
+     ->count_all_results();
+     return $query;
+ }
+
+ public function countNewContact2($campana,$start_date,$end_date)
+ {
+   $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->like("campana",$campana)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') <=", $end_date)
      ->count_all_results();
      return $query;
  }
 
  public function countCallContact()
  {
+    $day= new DateTime("now");
+    $curr_date = $day->format('Y-m-d');
+    $where=array("DATE_FORMAT(fechaIngreso,'%Y-%m-%d')"=>$curr_date);
     $query=$this->db 
      ->select("idcontacto")
      ->from("contacto")
      ->where(array("estado !="=>"En espera de llamado"))
+     ->where($where)
      ->count_all_results();
      return $query;
+ }
+
+ public function countCallContact2($campana,$start_date,$end_date)
+ {
+   $query=$this->db 
+     ->select("idcontacto")
+     ->from("contacto")
+     ->where("estado !=","En espera de llamado")
+     ->like("campana",$campana)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') <=", $end_date)
+     ->count_all_results();
+     return $query;
+ }
+
+ public function traeCampana()
+ {
+   $query=$this->db
+   ->distinct()
+   ->select("campana")
+   ->from("contacto")
+   ->order_by("campana")
+   ->get();
+   return $query->result();
  }
 
  public function countAgendContact()
  {
+    $day= new DateTime("now");
+    $curr_date = $day->format('Y-m-d');
+    $where=array("DATE_FORMAT(fechaIngreso,'%Y-%m-%d')"=>$curr_date);
     $query=$this->db 
      ->select("idcontacto")
      ->from("contacto")
-     ->where(array("estado "=>"Agendo"))
+     ->where(array("estado "=>"Agenda"))
+     ->where($where)
      ->count_all_results();
      return $query;
  }
 
- public function countNotCallContact()
+ public function coundAgendContact2($campana,$start_date,$end_date)
  {
     $query=$this->db 
      ->select("idcontacto")
      ->from("contacto")
-     ->where(array("estado "=>"No llamar más"))
+     ->where("estado","Agenda")
+     ->like("campana",$campana)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(fechaIngreso,'%Y-%m-%d') <=", $end_date)
      ->count_all_results();
      return $query;
  }
@@ -65,6 +115,20 @@ class Contacto extends CI_Model {
  	->order_by("idcontacto","desc")
  	->get();
  	return $query->result();
+ }
+
+ public function listContacto1()
+ {
+   $day= new DateTime("now");
+   $curr_date = $day->format('Y-m-d');
+   $where=array("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d')"=>$curr_date);
+  $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,t.descripcion,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
+  ->from("contacto c")
+  ->where($where)
+  ->join("tratamiento t","c.tratamiento= t.idtratamiento")
+  ->order_by("idcontacto","desc")
+  ->get();
+  return $query->result();
  }
 
  public function getContacto($id)

@@ -71,6 +71,7 @@ $route['eliminar-contacto/(:num)']='contactos/eliminar/$1';
 $route['reporte-contacto/(:num)']='contactos/reporte/$1';
 $route['get-contacto/(:num)']='contactos/getContacto/$1';
 $route['siguiente-contacto']='contactos/siguiente';
+$route['llenar-contactos-diarios']='contactos/llenar2';
 
 //URL PROVINCIAS
 $route['trae-regiones']='regiones/getRegiones';
@@ -89,3 +90,6 @@ $route['menu-empleados']='empleados/menu';
 $route['nuevo-empleado']='empleados/nuevo';
 $route['ficha-empleado/(:num)']='empleados/ficha/$1';
 $route['exportar-lista-empleados']='empleados/excel';
+
+//URL MENU ADMINISTRACIÓN
+$route['trae-contactos-cpanel']='contactos/traeContactos';
