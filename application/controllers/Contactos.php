@@ -16,16 +16,16 @@ class Contactos extends CI_Controller {
     {
        $us=$this->session_id;
        $usuario=$this->Usuario->getUsuario($us);
-       $tratamientos=$this->Tratamiento->listTratamiento();
        if($usuario->permisos == "1000" || $usuario->permisos == "1001" )
        {
+         $capes=$this->Usuario->listCape();
        	 $this->layout->setLayout('menu');
 	       $this->layout->setTitle("Menú Contactos");
 	       $this->layout->setKeywords("Menú Contactos");
 	       $this->layout->setDescripcion("Menú Contactos");
 	       $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
 	       $this->layout->js(array(base_url()."public/js/funciones.js","http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",base_url()."public/js/w2ui.js"));
-	       $this->layout->view('menu',compact('usuario','tratamientos'));
+	       $this->layout->view('menu',compact('usuario','capes'));
        }
        else
        {
@@ -71,6 +71,36 @@ class Contactos extends CI_Controller {
     }
   }
 
+  public function llenar3()
+  {
+    if(!empty($this->session_id))
+    {
+      $contactos=$this->Contacto->listContacto2();
+
+      echo json_encode($contactos);
+
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
+  public function llenar4()
+  {
+    if(!empty($this->session_id))
+    {
+      $contactos=$this->Contacto->listContacto3();
+
+      echo json_encode($contactos);
+
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
   public function getContacto($id)
   {
     if(!empty($this->session_id))
@@ -95,21 +125,18 @@ class Contactos extends CI_Controller {
       $check=$this->Contacto->check($id);
       if($check != 0)
       {
-        $tratamientos=$this->Tratamiento->listTratamiento();
         $llamadas=$this->Llamada->countLlamada($id);
-        $historials=$this->HistorialLlamada->listHistorialPersonal($id);
         $regiones=$this->Region->listRegiones();
         if($usuario->permisos == "1000" || $usuario->permisos == "1001" )
         {
           $contacto=$this->Contacto->getContacto($id);
-          $tratamientos=$this->Tratamiento->listTratamiento2($contacto->tratamiento);
           $this->layout->setLayout('menu');
           $this->layout->setTitle("Detalle Contacto ".$id);
           $this->layout->setKeywords("Detalle Contactos ".$id);
           $this->layout->setDescripcion("Detalle Contactos ".$id);
           $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
           $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js",base_url()."public/js/w2ui.js",base_url()."public/js/countdown.js"));
-          $this->layout->view('detalle',compact('usuario','contacto','tratamientos','llamadas','historials','regiones'));
+          $this->layout->view('detalle',compact('usuario','contacto','llamadas','regiones'));
         }
         else
         {
@@ -278,23 +305,60 @@ class Contactos extends CI_Controller {
   {
     if(!empty($this->session_id))
     {
-      $contacto=$this->Contacto->listContactoCape();
-          if(empty($contacto))
-          {
-            $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
-             redirect(base_url()."error",  301);
+      $us=$this->session_id;
+      $usuario=$this->Usuario->getUsuario($us);
+      $user=$usuario->idusuario;
 
-          } else {
-          
+      $viejos=$this->Contacto->countContactOdl($user);
+         if($viejos != 0)
+         {
+            $contacto=$this->Contacto->listContactoCape($user);
+            $id=$contacto->idcontacto;
+            $datos=array("ocupado"=>"S");
+            $update=$this->Contacto->update($datos,$id);
+            redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+         }
+         $cola=$this->Contacto->countCola($user);
+         if($cola != 0)
+         {
+           $contacto=$this->Contacto->listContactoCape1($user);
            $id=$contacto->idcontacto;
            $datos=array("ocupado"=>"S");
            $update=$this->Contacto->update($datos,$id);
            redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-        }
+         }
+         $nuevos=$this->Contacto->countNew();
+         if($nuevos != 0)
+         {
+           $contacto=$this->Contacto->listContactoCape2($user);
+           $id=$contacto->idcontacto;
+           $datos=array("ocupado"=>"S");
+           $update=$this->Contacto->update($datos,$id);
+           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+         }
+         $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
+         redirect(base_url()."error",  301);
     }
     else
     {
       redirect(base_url(),  301);
+    }
+  }
+
+  public function volver($id)
+  {
+     if(!empty($this->session_id))
+    {
+      $us=$this->session_id;
+      $usuario=$this->Usuario->getUsuario($us);
+      $datos=array("ocupado"=>"N");
+      $update=$this->Contacto->update($datos,$id);
+      redirect(base_url()."menu-contactos");
+
+    }
+    else
+    {
+       redirect(base_url(),  301);
     }
   }
 
@@ -384,10 +448,9 @@ class Contactos extends CI_Controller {
        $email=$this->input->post('email');
        $fono=$this->input->post('phone');
        $tratamiento=$this->input->post('treatment');
-       $trat=$this->Tratamiento->search($tratamiento);
        $oferta=$this->input->post('offer');
        $completo=$nombre.' '.$apellidos;
-       $datos=array('nombre'=>$completo,'email'=>$email,'telefono'=>$fono,'tratamiento'=>$trat->idtratamiento,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>2,'descuento'=>$oferta,'origen'=>'Contacto Facebook','estado'=>'En espera de llamado','ocupado'=>'N');
+       $datos=array('nombre'=>$completo,'email'=>$email,'telefono'=>$fono,'tratamiento'=>$tratamiento,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>2,'descuento'=>$oferta,'orden'=>2,'origen'=>'Contacto Facebook','estado'=>'En espera de llamado','ocupado'=>'N','usuario'=>1000);
        $insert=$this->Contacto->insert($datos);
        if($insert != 0)
        {
@@ -402,6 +465,63 @@ class Contactos extends CI_Controller {
     else
     {
       echo "Error";
+    }
+  }
+
+  public function getAntiguo()
+  {
+    if(!empty($this->session_id))
+    {
+      $us=$this->session_id;
+      $usuario=$this->Usuario->getUsuario($us);
+      if( $this->input->post())
+      {
+         $tipo = $_FILES['archivo']['type'];
+         $tamano = $_FILES['archivo']['size'];
+         $archivotmp = $_FILES['archivo']['tmp_name'];
+         date_default_timezone_set("UTC");
+         date_default_timezone_set("America/Santiago");
+         $nuevaIteracion=date("Y-m-d H:i:s");
+
+        $lineas = file($archivotmp);
+        $i=0;
+        foreach ($lineas as $linea_num => $linea)
+        { 
+         if($i != 0) 
+         {
+            $datos = explode(";",$linea);
+
+            $nombre=$datos[0];
+            $email=$datos[1];
+            $telefono=$datos[2];
+            $tratamiento=$datos[3];
+            $descuento=$datos[4];
+            $campana=utf8_encode($datos[5]);
+            $user=$datos[6];
+            $origen="Contacto Antiguo";
+            $orden=0;
+            $prioridad=7;
+            $ocupado="N";
+
+            $data=array("nombre"=>$nombre,"email"=>$email,"telefono"=>$telefono,"tratamiento"=>$tratamiento,"descuento"=>$descuento."% Descuento","campana"=>$campana,'nuevaIteracion'=>$nuevaIteracion,"origen"=>$origen,"fechaIngreso"=>$nuevaIteracion,"fechallamada"=>"0000-00-00 00:00:00","orden"=>$orden,"prioridad"=>$prioridad,"estado"=>"En espera de llamado","ocupado"=>$ocupado,"cita"=>0,"usuario"=>$user);
+            $insert=$this->Contacto->insert($data);
+            $datos2=array('contacto'=>$insert,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>'Contacto Antiguo','estado'=>'En espera de llamado');
+            $insert2=$this->Con1->insert($datos2); 
+         }
+         $i++;
+        }
+         
+        $datos1=array('accion'=>'Carga de Contactos Archivo CSV ','ip'=>$ip,'usuario'=>$usuario->idusuario);
+        $insert1=$this->Accion->insert($datos1);
+
+        $this->session->set_flashdata('ControllerMessage','Archivo CSV leido correctamente, se igresaron '.$i.' contactos. ');
+        redirect(base_url()."menu-principal",  301);
+          
+      }
+    }
+    else
+    {
+      redirect(base_url(),  301);
     }
   }
 
@@ -423,15 +543,29 @@ class Contactos extends CI_Controller {
         $descuento=$this->input->post('descuento');
         $origen=$this->input->post('origen');
         $campana=$this->input->post('campana');
-        $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>2,'estado'=>'En espera de llamado','ocupado'=>'N');
+        $asesor=$this->input->post('asesor');
+        if($origen == "Contacto Antiguo")
+        {
+          $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'orden'=>0,'prioridad'=>7,'estado'=>'En espera de llamado','ocupado'=>'N','usuario'=>$asesor);
+        }
+        else
+        {
+          $asesor=1000;
+          $datos=array('nombre'=>$nombre,'email'=>$email,'telefono'=>$nuemero,'tratamiento'=>$tratamiento,'descuento'=>$descuento.'% Descuento','origen'=>$origen,'campana'=>$campana,'nuevaIteracion'=>$nuevaIteracion,'orden'=>2,'prioridad'=>2,'estado'=>'En espera de llamado','ocupado'=>'N','usuario'=>$asesor);
+        }
         $insert=$this->Contacto->insert($datos);
         if($insert != 0)
         {
           $ip =$this->input->ip_address();
    	      $datos1=array('accion'=>'Ingreso contacto '.$nombre,'codigo'=>$insert,'ip'=>$ip,'usuario'=>$usuario->idusuario);
           $insert1=$this->Accion->insert($datos1);
-          $datos2=array('contacto'=>$insert,'usuario'=>$usuario->idusuario,'accion'=>'Ingreso contacto');
-          $insert3=$this->HistorialLlamada->insert($datos2);
+          if($origen == "Contacto Antiguo")
+          {
+            $datos2=array('contacto'=>$insert,'usuario'=>$asesor,'fecha'=>$nuevaIteracion,'tipo'=>'Contacto Antiguo','estado'=>'En espera de llamado');
+          } else {
+            $datos2=array('contacto'=>$insert,'usuario'=>$usuario->idusuario,'fecha'=>$nuevaIteracion,'tipo'=>'Nuevo Contacto','estado'=>'En espera de llamado');
+          }
+          $insert2=$this->Con1->insert($datos2);
           return true;
         }
         else
@@ -464,12 +598,95 @@ class Contactos extends CI_Controller {
         $end_date=date("Y-m-d", strtotime($fechaTermino));
         
         $nuevos=$this->Contacto->countNewContact2($campana,$start_date,$end_date);
-        $contactados=$this->Contacto->countCallContact2($campana,$start_date,$end_date);
+        $llamados=$this->Contacto->countCallContact2($campana,$start_date,$end_date);
+        $contactados=$this->Contacto->countContactados2($campana,$start_date,$end_date);
         $agendados=$this->Contacto->coundAgendContact2($campana,$start_date,$end_date);
         
-        $datos=array("nuevos"=>$nuevos,"contactados"=>$contactados,"agendados"=>$agendados);
+        $datos=array("nuevos"=>$nuevos,"llamados"=>$llamados,"contactados"=>$contactados,"agendados"=>$agendados);
 
         echo json_encode($datos);
+        exit;
+
+       
+      }
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
+  public function traeContactos1()
+  {
+    if(!empty($this->session_id))
+    {
+       if( $this->input->post())
+      {
+        $campana=$this->input->post("campana");
+        $fechaInicio=$this->input->post("fechaInicio");
+        $fechaTermino=$this->input->post("fechaTermino");
+
+        date_default_timezone_set("UTC");
+        date_default_timezone_set("America/Santiago");
+        $start_date=date("Y-m-d", strtotime($fechaInicio));
+        $end_date=date("Y-m-d", strtotime($fechaTermino));
+        
+        $nuevos=$this->Contacto->listContacto4($campana,$start_date,$end_date);
+        echo json_encode($nuevos);
+
+       
+      }
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
+  public function traeContactados1()
+  {
+    if(!empty($this->session_id))
+    {
+       if( $this->input->post())
+      {
+        $campana=$this->input->post("campana");
+        $fechaInicio=$this->input->post("fechaInicio");
+        $fechaTermino=$this->input->post("fechaTermino");
+
+        date_default_timezone_set("UTC");
+        date_default_timezone_set("America/Santiago");
+        $start_date=date("Y-m-d", strtotime($fechaInicio));
+        $end_date=date("Y-m-d", strtotime($fechaTermino));
+        
+        $contactados=$this->Contacto->listContacto5($campana,$start_date,$end_date);
+        echo json_encode($contactados);
+
+       
+      }
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
+  public function traeAgendados1()
+  {
+    if(!empty($this->session_id))
+    {
+       if( $this->input->post())
+      {
+        $campana=$this->input->post("campana");
+        $fechaInicio=$this->input->post("fechaInicio");
+        $fechaTermino=$this->input->post("fechaTermino");
+
+        date_default_timezone_set("UTC");
+        date_default_timezone_set("America/Santiago");
+        $start_date=date("Y-m-d", strtotime($fechaInicio));
+        $end_date=date("Y-m-d", strtotime($fechaTermino));
+        
+        $agendados=$this->Contacto->listContacto6($campana,$start_date,$end_date);
+        echo json_encode($agendados);
 
        
       }

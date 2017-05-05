@@ -20,7 +20,6 @@ insert into cargo(descripcion) values
 ('Gerente de Operaciones'),
 ('Recepcionista')
 ;
-select * from cargo;
 
 create table permisos
 (
@@ -120,6 +119,7 @@ create table accion
 );
 alter table accion auto_increment=1000;
 
+/*
 create table tratamiento
 (
  idtratamiento int not null auto_increment,
@@ -142,28 +142,30 @@ insert into tratamiento(descripcion)values
 ('Combinaciones Hilos Tracción y Reparadores'),
 ('Tratamiento Láser'),
 ('Hora de Evaluación Medicina Estética y Medicina Láser');
-
+*/
 create table contacto
 (
   idcontacto int not null auto_increment,
   nombre varchar(300) not null,
   email varchar(100) not null,
   telefono varchar(12) not null,
-  tratamiento int not null,
+  tratamiento varchar(300) not null,
   descuento varchar(100) not null,
   campana varchar(250)not null,
   origen varchar(100)not null,
   fechaIngreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fechaLlamada timestamp,
   nuevaIteracion timestamp,
+  orden int not null default '0',
   prioridad int not null,
   dias int,
   obs varchar(200),
   estado varchar(100),
   ocupado char(1)not null,
   cita int not null,
+  usuario int not null default '0',
   constraint pk_contacto primary key(idcontacto),
-  constraint fk_pro_cont foreign key(tratamiento) references tratamiento(idtratamiento)
+  constraint fk_cont_usu foreign key(usuario) references usuario(idUsuario)
 );
 alter table contacto auto_increment=1000;
 
@@ -181,6 +183,7 @@ create table llamada
 );
 alter table llamada auto_increment=1000;
 
+/*
 create table historialLlamada
 (
   idhistorial int not null auto_increment,
@@ -193,6 +196,7 @@ create table historialLlamada
   constraint fk_hs_usuario foreign key(usuario) references usuario(idusuario)
 );
 alter table historialLlamada auto_increment=1000;
+*/
 
 create table region 
 (
@@ -641,11 +645,11 @@ INSERT INTO comuna (id,nombre,idProvincia) VALUES
 (345, 'Putre', 2),
 (346, 'General Lagos', 2);
 
-
 create table tiempo
 (
   idtiempo int not null auto_increment,
   usuario int not null,
+  tipo varchar(100) not null,
   descripcion varchar(250)not null,
   tiempo timestamp,
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -654,16 +658,91 @@ create table tiempo
 ); 
 alter table tiempo auto_increment=1000;
 
+create table con
+(
+  idcon int not null auto_increment,
+  contacto int not null,
+  usuario int not null,
+  fecha timestamp,
+  tipo varchar(100) not null,
+  estado varchar(100) not null,
+  constraint pk_con primary key(idcon),
+  constraint fk_con_contacto foreign key(contacto) references contacto(idcontacto),
+  constraint fk_con_usuario foreign key(usuario) references usuario(idusuario)
+);
+
+alter table con auto_increment=1000;
+
+create table llam
+(
+  idllam int not null auto_increment,
+  contacto int not null,
+  usuario int not null,
+  fecha timestamp,
+  tipo varchar(100) not null,
+  estado varchar(100) not null,
+  constraint pk_llam primary key(idllam),
+  constraint fk_llam_contacto foreign key(contacto) references contacto(idcontacto),
+  constraint fk_llam_usuario foreign key(usuario) references usuario(idusuario)
+);
+
+alter table llam auto_increment=1000;
+
+create table cont
+(
+  idcont int not null auto_increment,
+  contacto int not null,
+  usuario int not null,
+  fecha timestamp,
+  tipo varchar(100) not null,
+  estado varchar(100) not null,
+  constraint pk_cont primary key(idcont),
+  constraint fk_cont_contacto foreign key(contacto) references contacto(idcontacto),
+  constraint fk_cont_usuario foreign key(usuario) references usuario(idusuario)
+);
+
+alter table cont auto_increment=1000;
+
+create table agen
+(
+  idagen int not null auto_increment,
+  contacto int not null,
+  usuario int not null,
+  fecha timestamp,
+  tipo varchar(100) not null,
+  estado varchar(100) not null,
+  constraint pk_agen primary key(idagen),
+  constraint fk_agen_contacto foreign key(contacto) references contacto(idcontacto),
+  constraint fk_agen_usuario foreign key(usuario) references usuario(idusuario)
+);
+
+alter table agen auto_increment=1000;
+
+select * from con;
+select * from llam;
+select * from cont;
+select * from agen;
+
 select * from accion;
 select * from usuario;
 select * from llamada;
 select * from historialLlamada;
+select * from contacto;
 
 select count(*) from contacto where campana='Campaña 3 zonas' order by campana;
 select * from tiempo;
 select * from contacto;
 
 delete from llamada where contacto = 1000;
+
+(select usuario,count(idcontacto) from contacto where estado='En espera de llamado'  group by usuario)UNION(select usuario,count(idcontacto) from contacto where estado !='En espera de llamado'  group by usuario);
+
+(select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from  tiempo where tipo='Tiempo llamada' and usuario=1001)UNION(select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from  tiempo where tipo='Tiempo muerto' and usuario=1001);
+ 
+select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from tiempo;
+
+select descripcion,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from tiempo where tipo='Tiempo muerto';
+
 
 select u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(t.tiempo))) AS tiempo_muerto from tiempo t INNER JOIN usuario u on t.usuario = u.idusuario group by u.usuario;
 

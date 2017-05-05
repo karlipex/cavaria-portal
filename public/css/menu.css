@@ -124,6 +124,11 @@ body{
     text-decoration: none;
     color: #47c1f2;
     transition: 1s;
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    top: -80px;
+    left: -300px;
 }
 .header a:hover{
     color: #666;
@@ -457,9 +462,156 @@ body{
     cursor: pointer;
 }
 
-.content{
+.content,.contents{
     position: relative;
     margin: 50px auto;
     width: 80%;
     font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+.contents{
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/*dashboard*/
+.contents #primeraSeccion li{
+    display: inline;
+    width: 180px;
+    height: 35px;
+    padding: 10px 5px;
+    box-sizing: border-box;
+    margin: 10px;
+    vertical-align: middle;
+    background-color: #fff;
+    box-shadow: -2px 2px 6px #ccc;
+}
+.contents #primeraSeccion li input, .contents #primeraSeccion li select{
+    width: 180px;
+    height: 25px;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    letter-spacing: 1px;
+    padding: 3px;
+    box-sizing: border-box;
+    border: none
+}
+.contents #secondSection{
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+}
+.contents #secondSection .cuadro{
+    display: inline-block;
+    width: 200px;
+    min-height: 200px;
+    margin: 10px;
+    padding: 20px 0;
+    box-sizing: border-box;
+    letter-spacing: 0.6px;
+    transition: 0.5s;
+    box-shadow: -2px 2px 6px #ccc;
+}
+.contents #secondSection .cuadro:nth-child(1){
+    background-color: rgba(255,0,0,0.6);
+}
+.contents #secondSection .cuadro:nth-child(2){
+    background-color: rgba(255,255,0,0.6);
+}
+.contents #secondSection .cuadro:nth-child(3){
+    background-color: rgba(0,205,0,0.6);
+}
+.contents #secondSection .cuadro h3,.contents #secondSection .cuadro p,.contents #secondSection .cuadro div{
+    position: relative;
+    padding: 5px 10px;
+    box-sizing: border-box;
+}
+.contents #secondSection .cuadro h3{
+    font-size: 65px;
+    padding: 0;
+    margin: 0px;
+}
+.contents #secondSection .cuadro div a{
+    padding: 6px 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.contents #secondSection .cuadro a:hover{
+    box-shadow: 0 0 8px #444;
+}
+.tabing{
+    position: relative;
+    margin-bottom: 10px;
+}
+.tabing .cerrar{
+    position: absolute;
+    border: 1px solid #999;
+    color: #999;
+    padding: 6px 9px 3px 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    top: -15px;
+    right: -15px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.tabing .cerrar:hover{
+    transform: rotate(360deg);
+}
+#chartdiv {
+  width: 550px;
+  height: 330px;
+}
+#chartdivp {
+  width: 500px;
+  height: 300px;
+}
+.subir{
+    position: absolute;
+    left: 0px;
+    top: 1.5px;
+    background-color: #47c1f2;
+    color: #fff;
+    padding: 5px 12px 2px 12px;
+    box-sizing: border-box;
+    z-index: 999999999999999999999;
+    cursor: pointer;
+    transition: 0.7s;
+    border: 1px solid #47c1f2;
+    border-radius: 3px;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+.subir:hover{
+    background-color: #fff;
+    color: #47c1f2;
+}
+.white{
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    min-height: 370px;
+    box-sizing: border-box;
+}
+.muertosyvivos{
+    position: absolute;
+    left: 50%;
+    top: 370px;
+}
+.muertosyvivos #capes1{
+    position: absolute;
+    top: 15px;
+    right: 0;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    width: 190px;
+    height: 24px;
+    letter-spacing: 0.5px;
+    border: 0px solid transparent;
+    font-size: 15px;
+}
+.muertosyvivos .tiempvs{
+    position: absolute;
+    text-align: left;
+    right: 0;
+    bottom: 0;
 }

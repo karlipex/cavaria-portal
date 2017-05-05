@@ -42,4 +42,16 @@ class Usuario extends CI_Model {
    return true;
  }
 
+ public function listCape()
+ {
+   $where=array("u.permisos"=>1001);
+   $query=$this->db 
+   ->select("u.idusuario,CONCAT(e.nombre,' ',e.paterno,' ',e.materno)as completo,u.permisos,u.usuario,u.password,u.estado",false)
+   ->from("usuario u")
+   ->join("empleado e","u.empleado= e.idempleado")
+   ->where($where)
+   ->get();
+   return $query->result();
+ }
+
 }

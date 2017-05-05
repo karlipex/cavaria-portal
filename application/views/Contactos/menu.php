@@ -3,10 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if($this->session->flashdata('ControllerMessage')!='') { ?>
    <div><div><?php echo $this->session->flashdata('ControllerMessage'); ?><br><br></div></div>
 <?php } ?>
-
 <div class="grilla">
   <h2>Menú Contactos</h2>
-    <a class="agregar" onclick="addContact()">Agregar</a>
+    <a class="agregar" onclick="addContact()">Agregar</a><!---
+    <?php if( $usuario->permisos == 1000){ ?>
+    <a href="<?php echo base_url()?>menu-principal">Menu Principal</a>
+    <?php } ?>--->
    <div id="grid" style="width: 100%; height: 350px"></div>
 </div>
 <!------------MODAL-------------->
@@ -15,23 +17,32 @@ if($this->session->flashdata('ControllerMessage')!='') { ?>
         <div id="formu">
         <h2>Nuevo Contacto</h2>
         <input id="cname" name="nombre" maxlength="100" placeholder="Nombres Completo:">
-	   <input id="cmail" name="email" maxlength="42"  placeholder="E-Mail:">
-	   <input id="cnumero" name="numero" maxlength="12" placeholder="Numero Teléfonico:">
-        <select id="ctrat" name="tratamiento">
-            <option value="0">Seleccione un Tratamiento</option>
-            <?php foreach ($tratamientos as $tratamiento) { ?>
-             <option value="<?php echo $tratamiento->idtratamiento ?>"><?php echo $tratamiento->descripcion ?></option>
-            <?php } ?>
-        </select>
+	    <input id="cmail" name="email" maxlength="42"  placeholder="E-Mail:">
+	    <input id="cnumero" name="numero" maxlength="12" placeholder="Numero Teléfonico:">
+        <input id="ctrat" name="tratamiento" maxlength="100" placeholder="Tratamiento">
         <input id="cdesc" name="descuento" maxlength="45"  placeholder="Descuento">
         <input id="ccampa" name="campana" maxlength="100"  placeholder="Campaña">
-        <select id="corigen" name="origen">
+        <select id="corigen" name="origen" onchange="origen()">
           <option value="0">Seleccione Origen</option>
           <option value="Contacto Pagina Web C.A.">Contacto Pagina Web C.A.</option>
           <option value="Contacto Facebook">Contacto Facebook</option>
+          <option value="Contacto Antiguo">Contacto Antiguo</option>
         </select>
-        <span class="boot">
-          <input id="ingr" class="ingr" type="button" value="Agregar" onclick="addNewContact()"></span>
+        <div id="asesor" style="display: none">
+        <?php if($usuario->permisos == 1000){ ?>
+
+            <select id="casesor" name="asesor">
+                <option value="">Seleccione CAPE</option>
+                <?php foreach ($capes as $cape) { ?>
+                 <option value="<?php echo $cape->idusuario ?>"><?php echo $cape->completo ?></option>  
+               <?php } ?> 
+            </select>
+        <?php } else { ?>
+           <input type="hidden" id="casesor" name="asesor" value="<?php echo $usuario->idusuario ?>">
+        <?php } ?>
+        </div>
+        <span class="boot" id="ingr" style="display: none">
+          <input class="ingr" type="button" value="Agregar" onclick="addNewContact()"></span>
         </div>
           <div class="oculto" id="adviser">
             <h2>Contacto agregado Correctamente</h2>
@@ -55,7 +66,7 @@ $(function () {
             { field: 'nombre', caption: 'Nombre', type: 'text' },
             { field: 'email', caption: 'E-Mail', type: 'text' },
             { field: 'telefono', caption: 'Teléfono', type: 'text' },
-            { field: 'descripcion', caption: 'Tratamiento', type: 'text' },
+            { field: 'tratamiento', caption: 'Tratamiento', type: 'text' },
             { field: 'descuento', caption: 'Descuento', type: 'text' },
             { field: 'fechaIngreso', caption: 'Fecha Ingreso', type: 'date' },
             { field: 'origen', caption: 'Origen', type: 'text' },
@@ -66,7 +77,7 @@ $(function () {
             { field: 'nombre', caption: 'Nombre', size: '20%', sortable: true },
             { field: 'email', caption: 'E-Mail', size: '18%', sortable: true },
             { field: 'telefono', caption: 'Teléfono', size: '10%' },
-            { field: 'descripcion', caption: 'Tratamiento', size: '15%' },
+            { field: 'tratamiento', caption: 'Tratamiento', size: '15%' },
             { field: 'descuento', caption: 'Descuento', size: '10%' },
             { field: 'fechaIngreso', caption: 'Fecha Ingreso', size: '10%' },
             { field: 'origen', caption: 'Origen', size: '15%' },
@@ -94,6 +105,7 @@ $(function () {
         descuento = document.getElementById("cdesc").value;
         campana=document.getElementById("ccampa").value;
         origen = document.getElementById("corigen").value;
+        asesor=document.getElementById("casesor").value;
         expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         if (nombre.length == 0 || /^\s+$/.test(nombre)) {
             document.getElementById("cname").className = "fail";
@@ -142,6 +154,7 @@ $(function () {
                     descuento: $("#cdesc").val(),
                     campana: $("#ccampa").val(),
                     origen: $("#corigen").val(),
+                    asesor:$("#casesor").val(),
                 },
                  success:  function (a) {
                     console.log(a);
@@ -163,9 +176,11 @@ $(function () {
             document.getElementById("cname").value="";
             document.getElementById("cmail").value="";
             document.getElementById("cnumero").value="";
-            document.getElementById("ctrat").value=0;
+            document.getElementById("ctrat").value="";
             document.getElementById("cdesc").value="";
             document.getElementById("ccampa").value="";
             document.getElementById("corigen").value=0;
+            document.getElementById("casesor").value="";
+            document.getElementById("asesor").style.display="none";
         }
 </script>

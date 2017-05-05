@@ -70,26 +70,49 @@ class Menu extends CI_Controller {
       {
        $us=$this->session_id;
        $usuario=$this->Usuario->getUsuario($us);
+       $user=$usuario->idusuario;
        if($usuario->permisos == 1001)
        {
-          $contacto=$this->Contacto->listContactoCape();
-          if(empty($contacto))
-          {
-            $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
-            redirect(base_url()."error",  301);
-
-          } else {
-             $id=$contacto->idcontacto;
-             $datos=array("ocupado"=>"S");
-             $update=$this->Contacto->update($datos,$id);
-             redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-          }
+         $viejos=$this->Contacto->countContactOdl($user);
+         if($viejos != 0)
+         {
+            $contacto=$this->Contacto->listContactoCape($user);
+            $id=$contacto->idcontacto;
+            $datos=array("ocupado"=>"S");
+            $update=$this->Contacto->update($datos,$id);
+            redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+         }
+         $cola=$this->Contacto->countCola($user);
+         if($cola != 0)
+         {
+           $contacto=$this->Contacto->listContactoCape1($user);
+           $id=$contacto->idcontacto;
+           $datos=array("ocupado"=>"S");
+           $update=$this->Contacto->update($datos,$id);
+           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+         }
+         $nuevos=$this->Contacto->countNew();
+         if($nuevos != 0)
+         {
+           $contacto=$this->Contacto->listContactoCape2($user);
+           $id=$contacto->idcontacto;
+           $datos=array("ocupado"=>"S");
+           $update=$this->Contacto->update($datos,$id);
+           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+         }
+         $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
+         redirect(base_url()."error",  301);
        }
       
        $campanas=$this->Contacto->traeCampana();
        $countAll=$this->Contacto->countNewContact();
+       $countCall=$this->Contacto->countContactCall();
+       $contactados=$this->Contacto->countContactados();
        $countAgend=$this->Contacto->countAgendContact();
-       $countCall=$this->Contacto->countCallContact();
+       
+
+       //CAPES
+       $capes=$this->Usuario->listCape();
        
 
 	     $this->layout->setLayout('menu');
@@ -98,7 +121,7 @@ class Menu extends CI_Controller {
 	     $this->layout->setDescripcion("Menu Principal");
 	     $this->layout->css(array(base_url()."public/css/menu.css",base_url()."public/css/w2ui.css"));
 	     $this->layout->js(array(base_url()."public/js/funciones.js","https://code.jquery.com/jquery-3.1.1.min.js","http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",base_url()."public/js/w2ui.js"));
-	     $this->layout->view('menu',compact('usuario','campanas','countAll','countAgend','countCall'));
+	     $this->layout->view('menu',compact('usuario','campanas','countAll','countCall','countAgend','contactados','capes'));
 	  }
 	  else
 	  {

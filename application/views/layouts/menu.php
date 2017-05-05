@@ -36,6 +36,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
      <?php switch ($usuario->permisos) {
          case '1000':
              ?> 
+               <a href="<?php echo base_url()?>menu-principal">
+                <div class="cont-ico">
+                        <img src="<?php echo base_url() ?>public/img/menus/home.png">
+                    <p>Home</p>
+                   </div>
+              </a> 
                <a href="<?php echo base_url()?>menu-contactos">
                 <div class="cont-ico">
                         <img src="<?php echo base_url() ?>public/img/menus/con-azul.png">

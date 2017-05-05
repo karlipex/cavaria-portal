@@ -112,6 +112,26 @@ if(status == ""){
      document.getElementById("closecount").style.display="none";
    }
 }
+
+function origen(){
+  corigen = document.getElementById("corigen").value;
+  if(corigen ==""){
+    document.getElementById("asesor").style.display="none";
+    document.getElementById("ingr").style.display="none";
+  }
+  if(corigen =="Contacto Pagina Web C.A."){
+    document.getElementById("asesor").style.display="none";
+    document.getElementById("ingr").style.display="block";
+  }
+  if(corigen =="Contacto Facebook"){
+    document.getElementById("asesor").style.display="none";
+    document.getElementById("ingr").style.display="block";
+  }
+   if(corigen =="Contacto Antiguo"){
+    document.getElementById("asesor").style.display="block";
+    document.getElementById("ingr").style.display="block";
+  }
+}
 function story(){
     document.getElementById("historial").classList.add("abremodal");
 }
@@ -122,10 +142,10 @@ function actButtonTime(){
     document.getElementById("newTime").style.display="block";
 }
 function actDate(){
-  document.getElementById("inicio").style.display="block";
+  document.getElementById("inicio").style.display="inline";
 }
 function actButtonDate(){
-  document.getElementById("fin").style.display="block";
+  document.getElementById("fin").style.display="inline";
 }
 function actButtonCerrarNewDate(){
     document.getElementById("closecount").style.display="block";
@@ -152,4 +172,32 @@ function getContactos1(){
 }
 function closeContactos1(){
   document.getElementById("infoContacto1").style.display="none";
+}
+function getContactos2(){
+  document.getElementById("infoContactados1").style.display="block";
+}
+function closeContactos2(){
+  document.getElementById("infoContactados1").style.display="none";
+}
+function getContactos3(){
+  document.getElementById("infoagendados1").style.display="block";
+}
+function closeContactos3(){
+  document.getElementById("infoagendados1").style.display="none";
+}
+function closeFiltro1(){
+  document.getElementById("filtro1").style.display="none";
+
+}
+function closeFiltro2(){
+  document.getElementById("filtro2").style.display="none";
+}
+function closeFiltro3(){
+  document.getElementById("filtro3").style.display="none";
+}
+function csv(){
+  document.getElementById("csv").classList.add("abremodal")
+}
+function closeCsv(){
+  document.getElementById("csv").classList.remove("abremodal")
 }

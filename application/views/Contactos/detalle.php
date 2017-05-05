@@ -35,7 +35,10 @@ $("#suggesstion-box").hide();
     <?php } ?>
     <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
     
-    <?php } else {?>
+    <?php } else {
+          if($usuario->permisos != 1000)
+          {
+      ?>
           <div id="timer">
             <div class="container">
                 <div>Tiempo de la llamada: </div>
@@ -59,7 +62,9 @@ $("#suggesstion-box").hide();
           </select>
           <?php } ?>
           </div>
-    <?php } ?>
+
+    <?php }
+           } ?>
    
   
     <br>
@@ -80,7 +85,7 @@ $("#suggesstion-box").hide();
    	     <td><i>E-Mail:</i></td>
    	     <td><input type="text" id="cemail" name="email" maxlength="42" value="<?php echo $contacto->email ?>" readonly></td>
           <td><i>Tratamiento:</i></td>
-   	     <td><input type="text" value="<?php echo $contacto->descripcion ?>" readonly></td>
+   	     <td><input type="text" value="<?php echo $contacto->tratamiento ?>" readonly></td>
    	  </tr>
    	  <tr>
    	     <td><i>Descuento:</i></td>
@@ -104,7 +109,11 @@ $("#suggesstion-box").hide();
           <span class="ingr" onclick="modifying()">Modificar</span>
           <span class="ingr" onclick="deleteCont()">Eliminar</span>
         <?php } ?>
+        <?php if($usuario->idusuario == 1000){?>
           <a class="ingr" href="<?php echo base_url()?>menu-contactos">Volver</a>
+        <?php } else { ?>
+          <a class="ingr" href="<?php echo base_url()?>volver/<?php echo $contacto->idcontacto ?>">Volver</a>
+        <?php } ?>
           </span>
 <input type="hidden" id="callValue" value="<?php echo $llamadas ?>">
 <input type="hidden" id="obsValue" value="<?php echo $contacto->obs ?>">
@@ -153,9 +162,13 @@ $("#suggesstion-box").hide();
         <br>
      <?php if($contacto->estado == "Agenda" || $contacto->estado == "No llamar más") { ?>
     
-     <?php } else {?>
-     <a class="travieso" onclick="abre()" id="btn-comenzar">Terminar Llamada</a>
-     <?php } ?>
+     <?php } else {
+         if($usuario->permisos != 1000){      ?>
+
+        <a class="travieso" onclick="abre()" id="btn-comenzar">Terminar Llamada</a>
+     <?php
+      } 
+     } ?>
      <a class="travieso" href="<?php echo base_url()?>reporte-contacto/<?php echo $contacto->idcontacto ?>">Reporte</a>
      <a class="travieso" id="sigcon" href="<?php echo base_url()?>siguiente-contacto" style="opacity: 0; poiter-events: none">Siguente Contacto</a>
 
@@ -526,6 +539,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();
@@ -565,6 +579,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log(a);
@@ -605,6 +620,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();
@@ -644,6 +660,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     alert("Error qliao error.");
@@ -686,6 +703,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log("Error");
@@ -726,6 +744,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();
@@ -766,6 +785,7 @@ function closemodifying(){
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();

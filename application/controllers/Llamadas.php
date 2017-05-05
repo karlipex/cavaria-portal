@@ -25,6 +25,8 @@ class Llamadas extends CI_Controller {
           $option=$this->input->post("option");
           $status=$this->input->post("stat");
           $tiempo=$this->input->post("tiempo");
+          $user=$usuario->idusuario;
+          $getContacto=$this->Contacto->getContacto($contacto);
           switch ($status) {
             case 'No contesta':
                     
@@ -33,10 +35,20 @@ class Llamadas extends CI_Controller {
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                      if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'No contesta');
+                         $insertx=$this->Llam->insert($datosx);
+
                      } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>3,'estado'=>'No contesta','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'No contesta');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'No contesta');
+                         $insertx1=$this->Con1->insert($datosx1);
+
+
                      }
                      $update=$this->Contacto->update($datos1,$contacto);
 
@@ -49,8 +61,8 @@ class Llamadas extends CI_Controller {
                          $insert=$this->Accion->insert($datos);
                          $traeContacto=$this->Contacto->getContacto($contacto);
                          echo json_encode($traeContacto);
-                         //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, no contesta.');
-                         //$insert2=$this->HistorialLlamada->insert($datos2);
+                         $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'No contesta',"tiempo"=>$llamada);
+                         $insert2=$this->Tiempo->insert($datos3);
                      }
 
 
@@ -63,8 +75,17 @@ class Llamadas extends CI_Controller {
                       $llamada=date('Y-m-d '.$tiempo.'');
                       $nuevaIteracion=$newDate." ".$newTime.":00";
                       $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>1,'estado'=>'Contesta, pero llama después','ocupado'=>'N');
+                      $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>1,'estado'=>'Contesta, pero llama después','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                       $update=$this->Contacto->update($datos1,$contacto);
+
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Constesta, pero llama despúes');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'Contesta, pero llama después');
+                         $insertx1=$this->Con1->insert($datosx1);
+
+                         $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Constesta, pero llama despúes');
+                         $insertx2=$this->Cont->insert($datosx2);
                     
                       $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Contesta, pero llama después');
                       $insert1=$this->Llamada->insert($datos2);
@@ -73,12 +94,12 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
+                         $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Contesta, pero llama después',"tiempo"=>$llamada);
+                         $insert2=$this->Tiempo->insert($datos3);
 
                          $traeContacto=$this->Contacto->getContacto($contacto);
                          echo json_encode($traeContacto);
 
-                         //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, contesta, pero llama después.');
-                         //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
                      
               break;
@@ -90,10 +111,19 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                    if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Buzón de voz');
+                         $insertx=$this->Llam->insert($datosx);
                     } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+21 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>4,'estado'=>'Buzón de voz','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'tipo'=>$getContacto->origen,'estado'=>'Buzón de voz');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'Buzón de voz');
+                         $insertx1=$this->Con1->insert($datosx1);
+
                     }
                      $update=$this->Contacto->update($datos1,$contacto);
 
@@ -105,11 +135,12 @@ class Llamadas extends CI_Controller {
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
 
+                         $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Buzón de voz',"tiempo"=>$llamada);
+                         $insert2=$this->Tiempo->insert($datos3);
+
                          $traeContacto=$this->Contacto->getContacto($contacto);
                          echo json_encode($traeContacto);
 
-                         //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, buzón de voz.');
-                         //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
 
               break;
@@ -119,8 +150,17 @@ class Llamadas extends CI_Controller {
                      $nuevaIteracion=date("Y-m-d 10:00:00",(strtotime("+7 Days")));
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                     $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará','ocupado'=>'N');
+                     $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'estado'=>'Llamará','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                      $update=$this->Contacto->update($datos1,$contacto);
+
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Llamará');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'Llamará');
+                         $insertx1=$this->Con1->insert($datosx1);
+
+                         $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Llamará');
+                         $insertx2=$this->Cont->insert($datosx2);
 
                      $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Llamará');
                      $insert1=$this->Llamada->insert($datos2);
@@ -129,6 +169,9 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
+
+                         $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Llamará',"tiempo"=>$llamada);
+                         $insert2=$this->Tiempo->insert($datos3);
 
                          $traeContacto=$this->Contacto->getContacto($contacto);
                          echo json_encode($traeContacto);
@@ -145,10 +188,18 @@ class Llamadas extends CI_Controller {
                      $llamada=date('Y-m-d '.$tiempo.'');
                      $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
                      if($tope > $nuevaIteracion){
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Corta llamada');
+                         $insertx=$this->Llam->insert($datosx);
                      } else {
                          $nuevaIteracion=date("Y-m-d H:i:s",(strtotime("+16 Hours")));
-                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N');
+                         $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>5,'estado'=>'Corta llamada','ocupado'=>'N',"usuario"=>$usuario->idusuario);
+
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Corta llamada');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'Corta llamada');
+                         $insertx1=$this->Con1->insert($datosx1);
                      }
                      $update=$this->Contacto->update($datos1,$contacto);
 
@@ -159,10 +210,12 @@ class Llamadas extends CI_Controller {
                          $ip =$this->input->ip_address();
                          $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                          $insert=$this->Accion->insert($datos);
+
+                         $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Corta llamada',"tiempo"=>$llamada);
+                         $insert2=$this->Tiempo->insert($datos3);
+
                          $traeContacto=$this->Contacto->getContacto($contacto);
                          echo json_encode($traeContacto);
-                         //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, corta llamada.');
-                         //$insert2=$this->HistorialLlamada->insert($datos2);
                      }
 
 
@@ -175,8 +228,17 @@ class Llamadas extends CI_Controller {
                    $llamada=date('Y-m-d '.$tiempo.'');
                    $nuevaIteracion=date($newDate." ".$newTime.":00");
                    $fecha=date("d-m-Y  H:i", strtotime($nuevaIteracion));
-                   $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'prioridad'=>6,'estado'=>'Embarazada','ocupado'=>'N');
+                   $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Próximo llamado el: '.$fecha,'nuevaIteracion'=>$nuevaIteracion,'orden'=>1,'prioridad'=>6,'estado'=>'Embarazada','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                    $update=$this->Contacto->update($datos1,$contacto);
+
+                         $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Embarazada');
+                         $insertx=$this->Llam->insert($datosx);
+                        
+                         $datosx1=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$nuevaIteracion,'tipo'=>$getContacto->origen,'estado'=>'Embarazada');
+                         $insertx1=$this->Con1->insert($datosx1);
+
+                         $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Embarazada');
+                         $insertx2=$this->Cont->insert($datosx2);
                     
                    $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Embarazada');
                    $insert1=$this->Llamada->insert($datos2);
@@ -186,11 +248,12 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Embarazada',"tiempo"=>$llamada);
+                      $insert2=$this->Tiempo->insert($datos3);
+
                       $traeContacto=$this->Contacto->getContacto($contacto);
                       echo json_encode($traeContacto);
 
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Llamada a contacto, Embarazada.');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
@@ -198,8 +261,17 @@ class Llamadas extends CI_Controller {
 
                   $llamada=date('Y-m-d '.$tiempo.'');
                   $idMedilink=$this->input->post("age");
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda','ocupado'=>'N','cita'=>$idMedilink);
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>3,'obs'=>'Agendo Cita N°: '.$idMedilink,'estado'=>'Agenda','ocupado'=>'N','cita'=>$idMedilink,"usuario"=>$usuario->idusuario);
                   $update=$this->Contacto->update($datos1,$contacto);
+
+                  $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Agenda');
+                  $insertx=$this->Llam->insert($datosx);
+
+                  $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Agenda');
+                  $insertx2=$this->Cont->insert($datosx2);
+
+                  $datosx3=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Agenda');
+                  $insertx3=$this->Agen->insert($datosx3);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Agenda');
                   $insert1=$this->Llamada->insert($datos2);
@@ -209,11 +281,11 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Agenda',"tiempo"=>$llamada);
+                      $insert2=$this->Tiempo->insert($datos3);
+
                       $traeContacto=$this->Contacto->getContacto($contacto);
                       echo json_encode($traeContacto);
-
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Agendo, cita N°:'.$idMedilink);
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
                   
             break;
@@ -221,8 +293,14 @@ class Llamadas extends CI_Controller {
             case 'Solicita no llamar de nuevo':
                  
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solicita no llamar de nuevo ','estado'=>'No llamar más','ocupado'=>'N');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Solicita no llamar de nuevo ','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                   $update=$this->Contacto->update($datos1,$contacto);
+
+                   $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solicita no llamar de nuevo');
+                   $insertx=$this->Llam->insert($datosx);
+
+                   $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solicita no llamar de nuevo');
+                   $insertx2=$this->Cont->insert($datosx2);
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solicita no llamar de nuevo');
                   $insert1=$this->Llamada->insert($datos2);
@@ -232,19 +310,26 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Solicita no llamar de nuevo',"tiempo"=>$llamada);
+                      $insert2=$this->Tiempo->insert($datos3);
+
                       $traeContacto=$this->Contacto->getContacto($contacto);
                       echo json_encode($traeContacto);
-
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
             case 'Solo cotizando':
 
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo cotizando ','estado'=>'No llamar más','ocupado'=>'N');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Solo cotizando ','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                   $update=$this->Contacto->update($datos1,$contacto);
+
+                   $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solo cotizando');
+                   $insertx=$this->Llam->insert($datosx);
+
+                   $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solo cotizando');
+                   $insertx2=$this->Cont->insert($datosx2);
+
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solo cotizando');
                   $insert1=$this->Llamada->insert($datos2);
@@ -254,11 +339,11 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Solo cotizando',"tiempo"=>$llamada);
+                      $insert2=$this->Tiempo->insert($datos3);
+
                       $traeContacto=$this->Contacto->getContacto($contacto);
                       echo json_encode($traeContacto);
-
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
@@ -267,8 +352,15 @@ class Llamadas extends CI_Controller {
                   $comuna=$this->input->post('comuna');
                   $getComuna=$this->Comuna->getComuna($comuna);
                   $llamada=date('Y-m-d '.$tiempo.'');
-                  $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'De otra '.$getComuna->region.', provincia: '.$getComuna->provincia.',  comuna: '.$getComuna->nombre,'estado'=>'No llamar más','ocupado'=>'N');
+                  $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'De otra '.$getComuna->region.', provincia: '.$getComuna->provincia.',  comuna: '.$getComuna->nombre,'estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                   $update=$this->Contacto->update($datos1,$contacto);
+
+                   $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'De otra ciudad');
+                   $insertx=$this->Llam->insert($datosx);
+
+                   $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'De otra ciudad');
+                   $insertx2=$this->Cont->insert($datosx2);
+
 
                   $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'De otra ciudad');
                   $insert1=$this->Llamada->insert($datos2);
@@ -278,19 +370,27 @@ class Llamadas extends CI_Controller {
                       $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                       $insert=$this->Accion->insert($datos);
 
+                      $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'De otra ciudad',"tiempo"=>$llamada);
+                      $insert2=$this->Tiempo->insert($datos3);
+
                       $traeContacto=$this->Contacto->getContacto($contacto);
                       echo json_encode($traeContacto);
 
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
             case 'Enfermedad autoinmune':
 
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Enfermedad autoinmune ','estado'=>'No llamar más','ocupado'=>'N');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Enfermedad autoinmune ','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                 $update=$this->Contacto->update($datos1,$contacto);
+
+                  $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Enfermedad autoinmune');
+                  $insertx=$this->Llam->insert($datosx);
+
+                  $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Enfermedad autoinmune');
+                  $insertx2=$this->Cont->insert($datosx2);
+
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Enfermedad autoinmune');
                 $insert1=$this->Llamada->insert($datos2);
@@ -300,19 +400,26 @@ class Llamadas extends CI_Controller {
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
 
+                    $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Enfermedad autoinmune',"tiempo"=>$llamada);
+                    $insert2=$this->Tiempo->insert($datos3);
+
                     $traeContacto=$this->Contacto->getContacto($contacto);
                     echo json_encode($traeContacto);
 
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
              case 'Solo curiosidad':
 
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Solo curiosidad','estado'=>'No llamar más','ocupado'=>'N');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Solo curiosidad','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                 $update=$this->Contacto->update($datos1,$contacto);
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solo curiosidad');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Solo curiosidad');
+                $insertx2=$this->Cont->insert($datosx2);
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Solo curiosidad');
                 $insert1=$this->Llamada->insert($datos2);
@@ -322,11 +429,11 @@ class Llamadas extends CI_Controller {
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
 
+                    $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Solo curiosidad',"tiempo"=>$llamada);
+                    $insert2=$this->Tiempo->insert($datos3);
+
                      $traeContacto=$this->Contacto->getContacto($contacto);
                      echo json_encode($traeContacto);
-
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
             break;
 
@@ -334,8 +441,14 @@ class Llamadas extends CI_Controller {
                   
                 $presupuesto= $this->input->post("prest");
                 $llamada=date('Y-m-d '.$tiempo.'');
-                $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Fuera de presupuesto, estimado a pagar: '.$presupuesto,'estado'=>'No llamar más','ocupado'=>'N');
+                $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Fuera de presupuesto, estimado a pagar: '.$presupuesto,'estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                 $update=$this->Contacto->update($datos1,$contacto);
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Fuera de presupuesto');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Fuera de presupuesto');
+                $insertx2=$this->Cont->insert($datosx2);
 
                 $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Fuera de presupuesto');
                 $insert1=$this->Llamada->insert($datos2);
@@ -345,11 +458,12 @@ class Llamadas extends CI_Controller {
                     $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                     $insert=$this->Accion->insert($datos);
 
+
+                    $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Fuera de presupuesto',"tiempo"=>$llamada);
+                    $insert2=$this->Tiempo->insert($datos3);
+
                      $traeContacto=$this->Contacto->getContacto($contacto);
                      echo json_encode($traeContacto);
-
-                      //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                      //$insert2=$this->HistorialLlamada->insert($datos2);
                     }
 
 
@@ -358,8 +472,15 @@ class Llamadas extends CI_Controller {
             case 'No tengo dinero':
                
                $llamada=date('Y-m-d '.$tiempo.'');
-               $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'No tengo dinero','estado'=>'No llamar más','ocupado'=>'N');
+               $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'No tengo dinero','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
                $update=$this->Contacto->update($datos1,$contacto);
+
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'No tengo dinero');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'No tengo dinero');
+                $insertx2=$this->Cont->insert($datosx2);
 
                $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'No tengo dinero');
                $insert1=$this->Llamada->insert($datos2);
@@ -369,11 +490,12 @@ class Llamadas extends CI_Controller {
                 $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                 $insert=$this->Accion->insert($datos);
 
+                $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'No tengo dinero',"tiempo"=>$llamada);
+                $insert2=$this->Tiempo->insert($datos3);
+
                  $traeContacto=$this->Contacto->getContacto($contacto);
                  echo json_encode($traeContacto);
 
-                  //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                  //$insert2=$this->HistorialLlamada->insert($datos2);
                 }
 
             break;
@@ -381,8 +503,14 @@ class Llamadas extends CI_Controller {
             case 'Ya se lo hizo':
                   
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya se lo hizo','estado'=>'No llamar más','ocupado'=>'N');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Ya se lo hizo','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
               $update=$this->Contacto->update($datos1,$contacto);
+
+               $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Ya se lo hizo');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Ya se lo hizo');
+                $insertx2=$this->Cont->insert($datosx2);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Ya se lo hizo');
               $insert1=$this->Llamada->insert($datos2);
@@ -392,11 +520,12 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+               $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Ya se lo hizo',"tiempo"=>$llamada);
+               $insert2=$this->Tiempo->insert($datos3);
+
                 $traeContacto=$this->Contacto->getContacto($contacto);
                 echo json_encode($traeContacto);
 
-                //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                //$insert2=$this->HistorialLlamada->insert($datos2);
               }   
 
             break;
@@ -404,8 +533,14 @@ class Llamadas extends CI_Controller {
             case 'Ya lo llamaron':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Ya lo llamaron','estado'=>'No llamar más','ocupado'=>'N');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Ya lo llamaron','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
               $update=$this->Contacto->update($datos1,$contacto);
+
+              $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Ya lo llamaron');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Ya lo llamaron');
+                $insertx2=$this->Cont->insert($datosx2);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Ya lo llamaron');
               $insert1=$this->Llamada->insert($datos2);
@@ -415,11 +550,11 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+               $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Ya lo llamaron',"tiempo"=>$llamada);
+               $insert2=$this->Tiempo->insert($datos3);
+
                 $traeContacto=$this->Contacto->getContacto($contacto);
                 echo json_encode($traeContacto);
-
-                //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                //$insert2=$this->HistorialLlamada->insert($datos2);
               }
                 
             break;
@@ -427,8 +562,14 @@ class Llamadas extends CI_Controller {
             case 'Número no corresponde':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Número no corresponde','estado'=>'No llamar más','ocupado'=>'N');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Número no corresponde','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
               $update=$this->Contacto->update($datos1,$contacto);
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Número no corresponde');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Número no corresponde');
+                $insertx2=$this->Cont->insert($datosx2);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Número no corresponde');
               $insert1=$this->Llamada->insert($datos2);
@@ -438,11 +579,12 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+
+               $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Número no corresponde',"tiempo"=>$llamada);
+               $insert2=$this->Tiempo->insert($datos3);
+
                 $traeContacto=$this->Contacto->getContacto($contacto);
                 echo json_encode($traeContacto);
-
-                //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                //$insert2=$this->HistorialLlamada->insert($datos2);
               }
             break;
             
@@ -450,8 +592,14 @@ class Llamadas extends CI_Controller {
               
               $prestacion=$this->input->post("prest");    
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Prestación no existe: '.$prestacion,'estado'=>'No llamar más','ocupado'=>'N');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Prestación no existe: '.$prestacion,'estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
               $update=$this->Contacto->update($datos1,$contacto);
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Prestación no existe');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Prestación no existe');
+                $insertx2=$this->Cont->insert($datosx2);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Prestación no existe');
               $insert1=$this->Llamada->insert($datos2);
@@ -461,11 +609,11 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+               $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Prestación no existe',"tiempo"=>$llamada);
+               $insert2=$this->Tiempo->insert($datos3);
+
                 $traeContacto=$this->Contacto->getContacto($contacto);
                 echo json_encode($traeContacto);
-
-                //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                //$insert2=$this->HistorialLlamada->insert($datos2);
               }
 
             break;
@@ -473,8 +621,14 @@ class Llamadas extends CI_Controller {
             case 'Pensó que la evaluación era gratis':
 
               $llamada=date('Y-m-d '.$tiempo.'');
-              $datos1=array('fechaLLamada'=>$fechaLLamada,'obs'=>'Pensó que la evaluación era gratis','estado'=>'No llamar más','ocupado'=>'N');
+              $datos1=array('fechaLLamada'=>$fechaLLamada,'orden'=>4,'obs'=>'Pensó que la evaluación era gratis','estado'=>'No llamar más','ocupado'=>'N',"usuario"=>$usuario->idusuario);
               $update=$this->Contacto->update($datos1,$contacto);
+
+                $datosx=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Pensó que la evaluación era gratis');
+                $insertx=$this->Llam->insert($datosx);
+
+                $datosx2=array('contacto'=>$contacto,'usuario'=>$user,'fecha'=>$fechaLLamada,'tipo'=>$getContacto->origen,'estado'=>'Pensó que la evaluación era gratis');
+                $insertx2=$this->Cont->insert($datosx2);
 
               $datos2=array('usuario'=>$usuario->idusuario,'contacto'=>$contacto,'tiempoLlamada'=>$llamada,'estado'=>'Pensó que la evaluación era gratis');
               $insert1=$this->Llamada->insert($datos2);
@@ -484,11 +638,11 @@ class Llamadas extends CI_Controller {
                $datos=array('accion'=>'llamada a contacto '.$contacto,'codigo'=>$insert1,'ip'=>$ip,'usuario'=>$usuario->idusuario);
                $insert=$this->Accion->insert($datos);
 
+               $datos3=array("usuario"=>$user,"tipo"=>"Tiempo llamada","descripcion"=>'Pensó que la evaluación era gratis',"tiempo"=>$llamada);
+               $insert2=$this->Tiempo->insert($datos3);
+
                 $traeContacto=$this->Contacto->getContacto($contacto);
                 echo json_encode($traeContacto);
-
-                //$datos2=array('contacto'=>$contacto,'usuario'=>$usuario->idusuario,'accion'=>'Solicita no llamar de nuevo');
-                //$insert2=$this->HistorialLlamada->insert($datos2);
               }
 
             break;
