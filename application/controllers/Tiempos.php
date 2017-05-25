@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Tiempos extends CI_Controller {
+class tiempos extends CI_Controller {
 
   private $session_id;
   public function __construct()
@@ -25,8 +25,39 @@ class Tiempos extends CI_Controller {
         $tFuera=date('Y-m-d '.$tiempo.'');
       	$dett=$this->input->post("stte");
       	$user=$usuario->idusuario;
-        $datos=array("usuario"=>$user,"tipo"=>"Tiempo muerto","descripcion"=>$dett,"tiempo"=>$tFuera);
-        $insert=$this->Tiempo->insert($datos);
+        
+        switch ($dett) {
+          case 'Llamada Entrante':
+                $datos=array("usuario"=>$user,"tipo"=>"Gestión","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;
+
+          case 'Respondiendo Whatsapp':
+                $datos=array("usuario"=>$user,"tipo"=>"Gestión","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;
+
+          case 'Respondiendo Correo':
+                $datos=array("usuario"=>$user,"tipo"=>"Gestión","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;
+
+          case 'Descanso':
+                $datos=array("usuario"=>$user,"tipo"=>"Administrativo","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;
+
+           case 'Colación':
+                $datos=array("usuario"=>$user,"tipo"=>"Administrativo","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;
+
+          case 'Requerimiento administrativo':
+                $datos=array("usuario"=>$user,"tipo"=>"Administrativo","descripcion"=>$dett,"tiempo"=>$tFuera);
+                $insert=$this->Tiempo->insert($datos);
+            break;  
+        }
+
       }
     }
     else
@@ -41,6 +72,7 @@ class Tiempos extends CI_Controller {
     $usuario=$this->Usuario->getUsuario($us);
     if( $this->input->post())
     {
+      $campana=$this->input->post("campana");
       $cape=$this->input->post("capes1");
       $fechaInicio=$this->input->post("fechaInicio");
       $fechaTermino=$this->input->post("fechaTermino");
@@ -50,7 +82,7 @@ class Tiempos extends CI_Controller {
       $start_date=date("Y-m-d", strtotime($fechaInicio));
       $end_date=date("Y-m-d", strtotime($fechaTermino));
 
-      $tiempos1=$this->Tiempo->tiempoLlamada($cape,$start_date,$end_date);
+      $tiempos1=$this->Tiempo->tiempoLlamadaCampana($cape,$campana,$start_date,$end_date);
       if($tiempos1->llamada == null){
 
         $time="00:00:00";
@@ -58,17 +90,67 @@ class Tiempos extends CI_Controller {
       } else {
         $time=$tiempos1->llamada;
       }
-      $tiempos2=$this->Tiempo->tiempoMuerto($cape,$start_date,$end_date);
-       if($tiempos2->muerto == null){
+      $tiempos2=$this->Tiempo->tiempoGestionCampana($cape,$campana,$start_date,$end_date);
+       if($tiempos2->gestion == null){
 
         $time1="00:00:00";
 
       } else {
-        $time1=$tiempos2->muerto;
+        $time1=$tiempos2->gestion;
       }
-      $datos=array("llamada"=>$time,"muerto"=>$time1);
+      $tiempos3=$this->Tiempo->tiempoAdministrativoCampana($cape,$campana,$start_date,$end_date);
+      if($tiempos3->administrativo == null){
+
+        $time2="00:00:00";
+
+      } else {
+        $time2=$tiempos3->administrativo;
+      }
+
+      $datos=array("llamada"=>$time,"gestion"=>$time1,"administrativo"=>$time2);
       echo json_encode($datos);
-      exit;
+    }
+    else
+    {
+      redirect(base_url(),  301);
+    }
+  }
+
+  public function traeTiempoCape2()
+  {
+    $us=$this->session_id;
+    $usuario=$this->Usuario->getUsuario($us);
+    if( $this->input->post())
+    {
+      $cape=$this->input->post("capes2");
+
+      $tiempos1=$this->Tiempo->tiempoLlamadaHoy($cape);
+      if($tiempos1->llamada == null){
+
+        $time="00:00:00";
+
+      } else {
+        $time=$tiempos1->llamada;
+      }
+      $tiempos2=$this->Tiempo->tiempoGestionHoy($cape);
+       if($tiempos2->gestion == null){
+
+        $time1="00:00:00";
+
+      } else {
+        $time1=$tiempos2->gestion;
+      }
+      $tiempos3=$this->Tiempo->tiempoAdministrativoHoy($cape);
+      if($tiempos3->administrativo == null){
+
+        $time2="00:00:00";
+
+      } else {
+        $time2=$tiempos3->administrativo;
+      }
+
+      $datos=array("llamada"=>$time,"gestion"=>$time1,"administrativo"=>$time2);
+      echo json_encode($datos);
 
     }
     else

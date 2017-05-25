@@ -167,6 +167,9 @@ function actButtonCerrarNP(){
     document.getElementById("closecount").style.display="block";
     document.getElementById("closecount").setAttribute("onclick","nopres()");
 }
+function getLlamados(){
+  document.getElementById("infoLlamados").style.display="block";
+}
 function getContactos1(){
   document.getElementById("infoContacto1").style.display="block";
 }
@@ -178,6 +181,9 @@ function getContactos2(){
 }
 function closeContactos2(){
   document.getElementById("infoContactados1").style.display="none";
+}
+function closeContactos4(){
+  document.getElementById("infoLlamados").style.display="none";
 }
 function getContactos3(){
   document.getElementById("infoagendados1").style.display="block";
@@ -195,9 +201,16 @@ function closeFiltro2(){
 function closeFiltro3(){
   document.getElementById("filtro3").style.display="none";
 }
+function closeFiltro4(){
+  document.getElementById("filtro4").style.display="none";
+}
 function csv(){
   document.getElementById("csv").classList.add("abremodal")
+  document.getElementById("csv").style.display="block";
+  document.getElementById("csv").style.pointerEvents="all";
 }
 function closeCsv(){
-  document.getElementById("csv").classList.remove("abremodal")
+  document.getElementById("csv").classList.remove("abremodal");
+  document.getElementById("csv").style.display="none";
+  document.getElementById("csv").style.pointerEvents="none";
 }

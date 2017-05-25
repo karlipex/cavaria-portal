@@ -536,10 +536,11 @@ function closemodifying(){
                         $("#trObs").css("display","");
                       }
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
+                     
                 },
                 error: function(){
                     console.log();
@@ -576,10 +577,10 @@ function closemodifying(){
                         $("#trObs").css("display","");
                       }
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log(a);
@@ -617,10 +618,10 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();
@@ -657,10 +658,10 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     alert("Error qliao error.");
@@ -700,10 +701,10 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                       w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log("Error");
@@ -741,10 +742,10 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();
@@ -782,10 +783,10 @@ function closemodifying(){
                      $("#ecall").html(a["estado"]);
                      $("#ocont").html(a["obs"]);
                     w2ui["grid2"].reload();
+                     window.location="<?php echo base_url()?>siguiente-contacto";
                      document.getElementById("timer").style.display="none";
                      document.getElementById("sigcon").style.opacity="1";
                      document.getElementById("sigcon").style.pointerEvents="All";
-                     window.location="<?php echo base_url()?>siguiente-contacto";
                 },
                 error: function(){
                     console.log();

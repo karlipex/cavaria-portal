@@ -61,7 +61,7 @@ class Contacto extends CI_Model {
     $query=$this->db 
      ->select("cn.idcon as id")
      ->from("contacto cto")
-     ->join("con cn","cn.usuario = cto.idcontacto")
+     ->join("con cn","cn.contacto = cto.idcontacto")
      ->where($where)
      ->count_all_results();
      return $query;
@@ -75,7 +75,7 @@ class Contacto extends CI_Model {
     $query=$this->db 
      ->select("cn.idllam as id")
      ->from("contacto cto")
-     ->join("llam ll","ll.usuario = cto.idcontacto")
+     ->join("llam ll","ll.contacto = cto.idcontacto")
      ->where($where)
      ->count_all_results();
      return $query;
@@ -89,7 +89,7 @@ class Contacto extends CI_Model {
     $query=$this->db 
      ->select("cnt.idcont as id")
      ->from("contacto cto")
-     ->join("cont cnt","cnt.usuario = cto.idcontacto")
+     ->join("cont cnt","cnt.contacto = cto.idcontacto")
      ->where($where)
      ->count_all_results();
      return $query;
@@ -103,7 +103,7 @@ class Contacto extends CI_Model {
     $query=$this->db 
      ->select("ag.idagen as id")
      ->from("contacto cto")
-     ->join("agen ag","ag.usuario = cto.idcontacto")
+     ->join("agen ag","ag.contacto = cto.idcontacto")
      ->where($where)
      ->count_all_results();
      return $query;
@@ -115,7 +115,7 @@ class Contacto extends CI_Model {
    $query=$this->db 
      ->select("cn.idcon as id")
      ->from("contacto cto")
-     ->join("con cn","cn.usuario = cto.idcontacto")
+     ->join("con cn","cn.contacto = cto.idcontacto")
      ->like("cto.campana",$campana)
      ->where("DATE_FORMAT(cn.fecha,'%Y-%m-%d') >=", $start_date)
      ->where("DATE_FORMAT(cn.fecha,'%Y-%m-%d') <=", $end_date)
@@ -129,7 +129,7 @@ class Contacto extends CI_Model {
    $query=$this->db 
      ->select("ll.idllam as id")
      ->from("contacto cto")
-     ->join("llam ll","ll.usuario = cto.idcontacto")
+     ->join("llam ll","ll.contacto = cto.idcontacto")
      ->like("cto.campana",$campana)
      ->where("DATE_FORMAT(ll.fecha,'%Y-%m-%d') >=", $start_date)
      ->where("DATE_FORMAT(ll.fecha,'%Y-%m-%d') <=", $end_date)
@@ -142,7 +142,7 @@ class Contacto extends CI_Model {
    $query=$this->db 
      ->select("cnt.idcont as id")
      ->from("contacto cto")
-     ->join("cont cnt","cnt.usuario = cto.idcontacto")
+     ->join("cont cnt","cnt.contacto = cto.idcontacto")
      ->like("cto.campana",$campana)
      ->where("DATE_FORMAT(cnt.fecha,'%Y-%m-%d') >=", $start_date)
      ->where("DATE_FORMAT(cnt.fecha,'%Y-%m-%d') <=", $end_date)
@@ -155,7 +155,7 @@ class Contacto extends CI_Model {
     $query=$this->db 
      ->select("ag.idagen as id")
      ->from("contacto cto")
-     ->join("agen ag","ag.usuario = cto.idcontacto")
+     ->join("agen ag","ag.contacto = cto.idcontacto")
      ->like("cto.campana",$campana)
      ->where("DATE_FORMAT(ag.fecha,'%Y-%m-%d') >=", $start_date)
      ->where("DATE_FORMAT(ag.fecha,'%Y-%m-%d') <=", $end_date)
@@ -181,6 +181,38 @@ class Contacto extends CI_Model {
  	->order_by("c.idcontacto","desc")
  	->get();
  	return $query->result();
+ }
+
+ public function listContactoXCape($id)
+ {
+   $day= new DateTime("now");
+   $curr_date = $day->format('Y-m-d');
+   $where=array("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d')"=>$curr_date,"usuario"=>$id);
+  $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
+  ->from("contacto c")
+  ->where($where)
+  ->order_by("c.idcontacto","desc")
+  ->get();
+  if($query->num_rows()>0)
+  {
+    return $query->result(); 
+  }
+ }
+
+ public function listContactoXCape2()
+ {
+   $day= new DateTime("now");
+   $curr_date = $day->format('Y-m-d');
+   $where=array("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d')"=>$curr_date,"c.origen !="=>"Contacto Antiguo");
+  $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
+  ->from("contacto c")
+  ->where($where)
+  ->order_by("c.idcontacto","desc")
+  ->get();
+  if($query->num_rows()>0)
+  {
+    return $query->result(); 
+  }
  }
 
  public function listContacto1()
@@ -226,9 +258,10 @@ class Contacto extends CI_Model {
  {
     $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
      ->from("contacto c")
+     ->join("con cn","cn.contacto = c.idcontacto")
      ->like("c.campana",$campana)
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') >=", $start_date)
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') <=", $end_date)
+     ->where("DATE_FORMAT(cn.fecha,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(cn.fecha,'%Y-%m-%d') <=", $end_date)
      ->get();
   return $query->result();
  }
@@ -237,10 +270,10 @@ class Contacto extends CI_Model {
  {
     $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
      ->from("contacto c")
+     ->join("cont cnt","cnt.contacto = c.idcontacto")
      ->like("c.campana",$campana)
-     ->where("c.estado !=","En espera de llamado")
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') >=", $start_date)
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') <=", $end_date)
+     ->where("DATE_FORMAT(cnt.fecha,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(cnt.fecha,'%Y-%m-%d') <=", $end_date)
      ->get();
   return $query->result();
  }
@@ -249,10 +282,22 @@ class Contacto extends CI_Model {
  {
     $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
      ->from("contacto c")
+     ->join("agen ag","ag.contacto= c.idcontacto")
      ->like("c.campana",$campana)
-     ->where("c.estado","Agenda")
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') >=", $start_date)
-     ->where("DATE_FORMAT(c.fechaIngreso,'%Y-%m-%d') <=", $end_date)
+     ->where("DATE_FORMAT(ag.fecha,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(ag.fecha,'%Y-%m-%d') <=", $end_date)
+     ->get();
+  return $query->result();
+ }
+
+ public function listContacto7($campana,$start_date,$end_date)
+ {
+    $query=$this->db->select("c.idcontacto as recid,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y %H:%m')as fechaIngreso,c.origen,c.campana",false)
+     ->from("contacto c")
+     ->join("llam ll","ll.contacto = c.idcontacto")
+     ->like("c.campana",$campana)
+     ->where("DATE_FORMAT(ll.fecha,'%Y-%m-%d') >=", $start_date)
+     ->where("DATE_FORMAT(ll.fecha,'%Y-%m-%d') <=", $end_date)
      ->get();
   return $query->result();
  }
@@ -260,7 +305,7 @@ class Contacto extends CI_Model {
  public function getContacto($id)
  {
    $where=array("c.idcontacto"=>$id);
-   $query=$this->db->select("c.idcontacto,c.nombre,c.email,c.telefono,c.tratamiento,c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y')as fechaIngreso,DATE_FORMAT(c.fechaLlamada,'%d/%m/%Y %H:%m')as fechaLlamada,c.origen,c.campana,c.estado,c.obs,c.ocupado",false)
+   $query=$this->db->select("c.idcontacto,c.nombre,c.email,c.telefono,c.tratamiento,c.dias,<c.descuento,DATE_FORMAT(c.fechaIngreso,'%d/%m/%Y')as fechaIngreso,DATE_FORMAT(c.fechaLlamada,'%d/%m/%Y %H:%m')as fechaLlamada,c.origen,c.campana,c.estado,c.obs,c.ocupado",false)
    ->from("contacto c")
    ->where($where)
    ->get();

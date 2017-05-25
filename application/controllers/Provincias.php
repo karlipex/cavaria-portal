@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Provincias extends CI_Controller {
+class provincias extends CI_Controller {
 
   private $session_id;
   public function __construct()

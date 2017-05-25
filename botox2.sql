@@ -1,6 +1,9 @@
 create database if not exists botox default character set utf8 collate utf8_spanish_ci;
 use botox;
 
+SET GLOBAL event_scheduler = ON;
+SET SQL_SAFE_UPDATES = 0;
+
 create table cargo
 (
  idcargo int not null auto_increment,
@@ -55,10 +58,23 @@ create table empleado
 alter table empleado auto_increment=1000;
 
 insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
+('15.592.305-9','Jose Rodrigo','Anfossi','Orellana','Chilena','1986-08-13 00:00:00','Sin Información','Calle x','Santiago','Santiago','janfossi@clinicaavaria.cl','Activo');
+
+insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
 ('16.374.667-0','Felipe','Meza','Mora','Chilena','1986-08-13 00:00:00','Analista Programador Computacional','Alcalde Pedro alarcon #887','San Miguel','Santiago','felipe.mezam13@gmail.com','Activo');
 
 insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
 ('9.357.515-6','Jeannette','Peralta','Fuentes','Chilena','1986-08-13 00:00:00','Sin información','Calle x','Maipu','Santiago','j.peralta@gmail.com','Activo');
+
+insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
+('13.284.345-7','Karina','Cerna','Espinoza','Chilena','1986-08-13 00:00:00','Sin información','Calle x','Maipu','Santiago','karina.cernae@gmail.com','Activo');
+
+insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
+('17.052.146-3','Karina','Estrada','Huenuqueo','Chilena','1986-08-13 00:00:00','Sin información','Calle x','Maipu','Santiago','karinaestradahuenuqueo@gmail.com','Activo');
+
+insert into empleado(rut,nombre,paterno,materno,nacionalidad,fechanacimiento,profesion,direccion,comuna,ciudad,correo,estado) value
+('17.120.170-5','Loretto','Castro','Duran','Chilena','1986-08-13 00:00:00','Sin información','Calle x','Las Condes','Santiago','loretto.efi@hotmail.com','Activo');
+
 
 create table contrato
 (
@@ -78,10 +94,23 @@ create table contrato
 alter table contrato auto_increment=1000;
 
 insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
-(1000,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1004,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+(1000,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1006,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
 
 insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
-(1000,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1000,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+(1001,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1004,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+
+insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
+(1002,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1000,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+
+insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
+(1003,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1000,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+
+insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
+(1004,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1000,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+
+insert into contrato(empleado,fechainicio,fechatermino,tipocontrato,cargo,horario,estado) values
+(1005,'2017-03-01 00:00:00','2017-03-31 00:00:00','Plazo Fijo',1000,'De 09:00 a 19:00 de Lunes a Viernes','Activo');
+
 
 create table usuario
 (
@@ -100,10 +129,22 @@ create table usuario
 alter table usuario auto_increment=1000;
 
 insert into usuario(empleado,permisos,usuario,password,correo,estado) values
-(1000,1000,'fmeza','77148f84898f3d54be71a6120e795a24049a520b','fmeza@clinicaavaria.cl','Activo');
+(1000,1000,'janfossi','aa2a0f3bcb0327098aa339180f399609984a4ad3','janfossi@clinicaavaria.cl','Activo');
 
 insert into usuario(empleado,permisos,usuario,password,correo,estado) values
-(1001,1001,'jperalta','77148f84898f3d54be71a6120e795a24049a520b','jperalta@clinicaavaria.cl','Activo');
+(1001,1000,'fmeza','77148f84898f3d54be71a6120e795a24049a520b','fmeza@clinicaavaria.cl','Activo');
+
+insert into usuario(empleado,permisos,usuario,password,correo,estado) values
+(1002,1001,'jperalta','aa2a0f3bcb0327098aa339180f399609984a4ad3','jperalta@clinicaavaria.cl','Activo');
+
+insert into usuario(empleado,permisos,usuario,password,correo,estado) values
+(1003,1001,'kcerna','aa2a0f3bcb0327098aa339180f399609984a4ad3','kcerna@clinicaavaria.cl','Activo');
+
+insert into usuario(empleado,permisos,usuario,password,correo,estado) values
+(1004,1001,'kestrada','aa2a0f3bcb0327098aa339180f399609984a4ad3','kestrada@clinicaavaria.cl','Activo');
+
+insert into usuario(empleado,permisos,usuario,password,correo,estado) values
+(1005,1001,'lcastro','aa2a0f3bcb0327098aa339180f399609984a4ad3','lcastro@clinicaavaria.cl','Activo');
 
 
 create table accion
@@ -718,34 +759,15 @@ create table agen
 
 alter table agen auto_increment=1000;
 
-select * from con;
-select * from llam;
-select * from cont;
-select * from agen;
 
-select * from accion;
-select * from usuario;
-select * from llamada;
-select * from historialLlamada;
-select * from contacto;
+/* EVENTOS */
 
-select count(*) from contacto where campana='Campaña 3 zonas' order by campana;
-select * from tiempo;
-select * from contacto;
+CREATE EVENT contacto_con_resagado
+ON SCHEDULE EVERY 1 DAY STARTS '2017-05-25 00:00:00'
+DO UPDATE botox.contacto cont INNER JOIN botox.con c ON c.contacto = cont.idcontacto SET cont.nuevaIteracion=DATE_ADD(cont.nuevaIteracion,INTERVAL 1 DAY), 
+c.fecha=DATE_ADD(c.fecha,INTERVAL 1 DAY) , cont.dias = cont.dias +1 WHERE cont.estado = 'En espera de llamado' OR cont.estado= 'Buzón de voz' OR cont.estado='No contesta';
 
-delete from llamada where contacto = 1000;
-
-(select usuario,count(idcontacto) from contacto where estado='En espera de llamado'  group by usuario)UNION(select usuario,count(idcontacto) from contacto where estado !='En espera de llamado'  group by usuario);
-
-(select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from  tiempo where tipo='Tiempo llamada' and usuario=1001)UNION(select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from  tiempo where tipo='Tiempo muerto' and usuario=1001);
- 
-select tipo,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from tiempo;
-
-select descripcion,SEC_TO_TIME(SUM(TIME_TO_SEC(tiempo))) AS tiempo from tiempo where tipo='Tiempo muerto';
-
-
-select u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(t.tiempo))) AS tiempo_muerto from tiempo t INNER JOIN usuario u on t.usuario = u.idusuario group by u.usuario;
-
-SELECT u.usuario,SEC_TO_TIME(SUM(TIME_TO_SEC(ll.tiempoLlamada))) AS horas FROM llamada ll INNER JOIN usuario u on ll.usuario = u.idusuario   group by u.usuario;
-
-select count(idcontacto) from contacto where estado<>'En espera de llamado';
+CREATE EVENT close_expired_contact
+ON SCHEDULE EVERY 1 DAY STARTS '2017-05-25 00:01:00'
+ON COMPLETION NOT PRESERVE ENABLE 
+DO UPDATE botox.contacto cont INNER JOIN botox.con c ON c.contacto = cont.idcontacto SET cont.estado ='Expirado', c.estado='Expirado' where cont.dias >=10; 

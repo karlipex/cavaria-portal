@@ -63,7 +63,7 @@ $route['error']='menu/error';
 //URL CONTACTO
 $route['menu-contactos']='contactos/index';
 $route['nuevo-contacto']='contactos/nuevo';
-$route['nuevo-contacto-facebook']='contactos/getFacebook';
+$route['nuevo-contacto-facebook']='externos/getFacebook';
 $route['llenar-contactos']='contactos/llenar';
 $route['detalle-contacto/(:num)']='contactos/detalle/$1';
 $route['modifica-contacto']='contactos/update';
@@ -77,8 +77,11 @@ $route['llenar-contactos-diarios-agendados']='contactos/llenar4';
 $route['trae-contactos-filtro']='contactos/traeContactos1';
 $route['trae-contactados-filtro']='contactos/traeContactados1';
 $route['trae-agendados-filtro']='contactos/traeAgendados1';
+$route['trae-llamados-filtro']='contactos/traeLlamados1';
 $route['carga-contactos-antiguos']='contactos/getAntiguo';
 $route['volver/(:num)']='contactos/volver/$1';
+$route['info-por-cape']='contactos/infoCape';
+$route['info-por-cape-diario']='contactos/infoCape2';
 //URL PROVINCIAS
 $route['trae-regiones']='regiones/getRegiones';
 $route['trae-provincias']='provincias/traeProvincias';
@@ -91,6 +94,7 @@ $route['trae-llamadas/(:num)']='llamadas/traeLlamadas/$1';
 //URL TIEMPOS
 $route['tiempo-fuera']='tiempos/insertTime';
 $route['trae-tiempos-usuario']='tiempos/traeTiempoCape';
+$route['trae-tiempos-usuario-diario']='tiempos/traeTiempoCape2';
 
 //URL EMPLEADOS
 $route['menu-empleados']='empleados/menu';

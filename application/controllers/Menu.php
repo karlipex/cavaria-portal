@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Menu extends CI_Controller {
+class menu extends CI_Controller {
 
  private $session_id;
  public function __construct()
@@ -73,35 +73,36 @@ class Menu extends CI_Controller {
        $user=$usuario->idusuario;
        if($usuario->permisos == 1001)
        {
-         $viejos=$this->Contacto->countContactOdl($user);
-         if($viejos != 0)
-         {
-            $contacto=$this->Contacto->listContactoCape($user);
-            $id=$contacto->idcontacto;
-            $datos=array("ocupado"=>"S");
-            $update=$this->Contacto->update($datos,$id);
-            redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-         }
-         $cola=$this->Contacto->countCola($user);
-         if($cola != 0)
-         {
-           $contacto=$this->Contacto->listContactoCape1($user);
-           $id=$contacto->idcontacto;
-           $datos=array("ocupado"=>"S");
-           $update=$this->Contacto->update($datos,$id);
-           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-         }
-         $nuevos=$this->Contacto->countNew();
-         if($nuevos != 0)
-         {
-           $contacto=$this->Contacto->listContactoCape2($user);
-           $id=$contacto->idcontacto;
-           $datos=array("ocupado"=>"S");
-           $update=$this->Contacto->update($datos,$id);
-           redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
-         }
-         $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
-         redirect(base_url()."error",  301);
+           $viejos=$this->Contacto->countContactOdl($user);
+           if($viejos != 0)
+           {
+              $contacto=$this->Contacto->listContactoCape($user);
+              $id=$contacto->idcontacto;
+              $datos=array("ocupado"=>"S");
+              $update=$this->Contacto->update($datos,$id);
+              redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+           }
+           $cola=$this->Contacto->countCola($user);
+           if($cola != 0)
+           {
+              $contacto=$this->Contacto->listContactoCape1($user);
+              $id=$contacto->idcontacto;
+              $datos=array("ocupado"=>"S");
+              $update=$this->Contacto->update($datos,$id);
+              redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+           }
+           $nuevos=$this->Contacto->countNew();
+           if($nuevos != 0)
+           {
+             $contacto=$this->Contacto->listContactoCape2($user);
+             $id=$contacto->idcontacto;
+             $datos=array("ocupado"=>"S");
+             $update=$this->Contacto->update($datos,$id);
+             redirect(base_url()."detalle-contacto/".$contacto->idcontacto);
+           }
+
+           $this->session->set_flashdata('ErrorMessage','No Existen mas contactos por llamar.');
+           redirect(base_url()."error",  301);
        }
       
        $campanas=$this->Contacto->traeCampana();
